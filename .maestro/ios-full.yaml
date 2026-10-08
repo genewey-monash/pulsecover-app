@@ -1,0 +1,60 @@
+appId: my.group5.pulsecover
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Create Account"
+    timeout: 60000
+- tapOn:
+    id: btn-create-account
+- extendedWaitUntil:
+    visible:
+      id: f-full-name
+    timeout: 20000
+- tapOn:
+    id: f-full-name
+- inputText: "Priya Nair"
+- tapOn:
+    id: f-email
+- inputText: "priya2@example.com"
+- tapOn:
+    id: f-date-of-birth
+- tapOn:
+    id: btn-submit
+- tapOn:
+    id: f-password-min-8-characters
+- inputText: "Monsoon#2026"
+- tapOn:
+    id: f-confirm-password
+- inputText: "Monsoon#2026"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn-create-account
+- takeScreenshot: i01-register
+- tapOn:
+    id: btn-create-account
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 40000
+- takeScreenshot: i02-home
+- tapOn:
+    id: tab-plans
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: i03-plans
+- tapOn:
+    id: tab-wearable
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: i04-wearable
+- tapOn:
+    id: tab-claims
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: i05-claims
+- tapOn:
+    id: tab-account
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: i06-account

@@ -1,0 +1,71 @@
+appId: my.group5.pulsecover
+---
+- openLink: pulsecover://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 60000
+- openLink: pulsecover:///apply
+- extendedWaitUntil:
+    visible: "Connect your wearable"
+    timeout: 15000
+- tapOn:
+    id: btn-next
+- extendedWaitUntil:
+    visible: "Your PulseCover Risk Rating"
+    timeout: 15000
+- takeScreenshot: e1-apply-quote
+- tapOn:
+    id: btn-next
+- extendedWaitUntil:
+    visible: "Beneficiary full name"
+    timeout: 15000
+- tapOn:
+    id: btn-next
+- assertVisible: "Required.*"
+- takeScreenshot: e1-apply-error
+- tapOn:
+    id: f-beneficiary-full-name
+- inputText: "Lim Mei Ling"
+- hideKeyboard
+- tapOn:
+    id: btn-next
+- extendedWaitUntil:
+    visible: "I consent.*"
+    timeout: 15000
+- tapOn: "I consent.*"
+- tapOn: "I have read how pricing works.*"
+- takeScreenshot: e1-apply-confirm
+- tapOn:
+    id: btn-confirm-and-start-my-cover
+- extendedWaitUntil:
+    visible: "You are covered!"
+    timeout: 30000
+- takeScreenshot: e1-apply-done
+- tapOn:
+    id: btn-go-to-my-dashboard
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 20000
+- takeScreenshot: e1-home-policy
+- openLink: pulsecover:///claim-new
+- extendedWaitUntil:
+    visible: "Claim type"
+    timeout: 15000
+- tapOn:
+    id: f-claim-amount-rm
+- inputText: "1250.50"
+- hideKeyboard
+- tapOn:
+    id: f-date-of-incident
+- tapOn: "OK"
+- tapOn:
+    id: f-what-happened
+- inputText: "Treated for a minor sports injury at the clinic"
+- hideKeyboard
+- takeScreenshot: e1-claim-filled
+- tapOn:
+    id: btn-submit-claim
+- extendedWaitUntil:
+    visible: "Claim submitted.*"
+    timeout: 20000
+- takeScreenshot: e1-claim-done

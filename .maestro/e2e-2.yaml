@@ -1,0 +1,50 @@
+appId: my.group5.pulsecover
+---
+- openLink: pulsecover://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 60000
+- openLink: pulsecover:///profile
+- extendedWaitUntil:
+    visible: "Personal Information"
+    timeout: 15000
+- tapOn:
+    id: f-phone-optional
+- inputText: "0123456789"
+- tapOn:
+    id: f-address-optional
+- inputText: "Kuala Lumpur"
+- tapOn:
+    id: btn-save-changes
+- extendedWaitUntil:
+    visible: "Your details have been saved."
+    timeout: 15000
+- takeScreenshot: e2-profile-saved
+- openLink: pulsecover:///plan-manage
+- extendedWaitUntil:
+    visible: "Change Your Plan"
+    timeout: 15000
+- tapOn: "Plan B"
+- tapOn:
+    id: btn-update-plan
+- extendedWaitUntil:
+    visible: "Your plan has been updated."
+    timeout: 15000
+- takeScreenshot: e2-plan-updated
+- openLink: pulsecover:///password
+- extendedWaitUntil:
+    visible: "Current password"
+    timeout: 15000
+- tapOn:
+    id: f-current-password
+- inputText: "Passw0rd!x"
+- tapOn:
+    id: f-new-password-min-8-characters
+- inputText: "Newpass#2026"
+- tapOn:
+    id: f-confirm-password
+- inputText: "Different#1"
+- tapOn:
+    id: btn-update-password
+- assertVisible: "The passwords do not match.*"
+- takeScreenshot: e2-password-mismatch

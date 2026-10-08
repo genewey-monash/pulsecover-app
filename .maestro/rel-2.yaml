@@ -1,0 +1,51 @@
+appId: my.group5.pulsecover
+---
+- launchApp
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 40000
+- tapOn:
+    id: tab-wearable
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    text: "Connect Now"
+    index: 0
+- extendedWaitUntil:
+    visible: "(?i)allow pulsecover.*"
+    timeout: 10000
+- takeScreenshot: s01-consent
+- tapOn:
+    id: btn-allow
+- waitForAnimationToEnd:
+    timeout: 5000
+- scrollUntilVisible:
+    element: "(?i)connected. we found.*"
+- takeScreenshot: s02-connected-summary
+- scroll
+- takeScreenshot: s03-summary-2
+- tapOn:
+    id: tab-plans
+- waitForAnimationToEnd:
+    timeout: 3000
+- tapOn:
+    text: "Individual"
+- waitForAnimationToEnd:
+    timeout: 2000
+- takeScreenshot: s04-plans-individual
+- tapOn:
+    id: tab-claims
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: s05-claims-nopolicy
+- openLink: pulsecover:///calculator?plan=C
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: s06-calc-c
+- openLink: pulsecover:///search
+- waitForAnimationToEnd:
+    timeout: 3000
+- inputText: "claim"
+- waitForAnimationToEnd:
+    timeout: 2000
+- takeScreenshot: s07-search

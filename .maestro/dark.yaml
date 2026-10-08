@@ -1,0 +1,42 @@
+appId: my.group5.pulsecover
+---
+- openLink: pulsecover://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 60000
+- tapOn:
+    id: tab-account
+- scrollUntilVisible:
+    element: "Dark"
+- tapOn: "Dark"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: d-account
+- tapOn:
+    id: tab-index
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: d-home
+- tapOn:
+    id: tab-plans
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: d-plans
+- tapOn:
+    id: tab-wearable
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: d-wearable
+- tapOn:
+    id: tab-claims
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: d-claims
+- openLink: pulsecover:///calculator
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: d-calculator
+- openLink: pulsecover:///apply
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: d-apply

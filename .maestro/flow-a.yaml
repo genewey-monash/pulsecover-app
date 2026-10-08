@@ -1,0 +1,30 @@
+appId: my.group5.pulsecover
+---
+- launchApp:
+    clearState: false
+- openLink: pulsecover://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 60000
+- tapOn:
+    id: tab-plans
+- waitForAnimationToEnd
+- takeScreenshot: a01-plans
+- scrollUntilVisible:
+    element: "Plan D"
+- takeScreenshot: a02-plans-d
+- tapOn:
+    id: tab-wearable
+- waitForAnimationToEnd
+- takeScreenshot: a03-wearable
+- tapOn:
+    text: "Connect now"
+    index: 1
+- waitForAnimationToEnd
+- takeScreenshot: a04-consent
+- tapOn:
+    id: btn-allow
+- extendedWaitUntil:
+    visible: "Connected. We found days of data.*"
+    timeout: 30000
+- takeScreenshot: a05-connected

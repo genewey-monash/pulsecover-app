@@ -1,0 +1,42 @@
+appId: my.group5.pulsecover
+---
+- clearState
+- openLink: pulsecover://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+- extendedWaitUntil:
+    visible: "Create account"
+    timeout: 60000
+- takeScreenshot: 01-welcome
+- tapOn:
+    id: btn-create-account
+- extendedWaitUntil:
+    visible:
+      id: f-full-name
+    timeout: 20000
+- tapOn:
+    id: f-full-name
+- inputText: "Tan Wei Ming"
+- tapOn:
+    id: f-email
+- inputText: "tester@example.com"
+- tapOn:
+    id: f-date-of-birth
+- tapOn: "15"
+- tapOn: "OK"
+- waitForAnimationToEnd
+- tapOn:
+    id: f-password-min-8-characters
+- inputText: "Passw0rd!x"
+- hideKeyboard
+- tapOn:
+    id: f-confirm-password
+- inputText: "Passw0rd!x"
+- waitForAnimationToEnd
+- takeScreenshot: 02-register-filled
+- scrollUntilVisible:
+    element: "Already have an account?"
+- tapOn:
+    id: btn-create-account
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 30000
+- takeScreenshot: 03-home-member

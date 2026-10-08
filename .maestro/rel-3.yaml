@@ -1,0 +1,37 @@
+appId: my.group5.pulsecover
+---
+- launchApp
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 40000
+- tapOn:
+    id: tab-account
+- scrollUntilVisible:
+    element: "Dark"
+- tapOn: "Dark"
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: t01-dark-account
+- tapOn:
+    id: tab-index
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: t02-dark-home
+- tapOn:
+    id: tab-plans
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: t03-dark-plans
+- tapOn:
+    id: tab-wearable
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: t04-dark-wearable
+- openLink: pulsecover:///apply
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: t05-dark-apply
+- openLink: pulsecover:///profile
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: t06-dark-profile

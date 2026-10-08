@@ -1,0 +1,108 @@
+appId: my.group5.pulsecover
+---
+- openLink: pulsecover://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 60000
+- openLink: pulsecover:///calculator
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-calculator
+- openLink: pulsecover:///compare
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-compare
+- openLink: pulsecover:///apply
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-apply
+- openLink: pulsecover:///claim-new
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-claim-new
+- openLink: pulsecover:///profile
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-profile
+- openLink: pulsecover:///plan-manage
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-plan-manage
+- openLink: pulsecover:///password
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-password
+- openLink: pulsecover:///referral
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-referral
+- openLink: pulsecover:///callback
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-callback
+- openLink: pulsecover:///contact
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-contact
+- openLink: pulsecover:///business
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-business
+- openLink: pulsecover:///faq
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-faq
+- openLink: pulsecover:///privacy
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-privacy
+- openLink: pulsecover:///how
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-how
+- openLink: pulsecover:///investors
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-investors
+- openLink: pulsecover:///search
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-search
+- openLink: pulsecover:///server
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: b-server

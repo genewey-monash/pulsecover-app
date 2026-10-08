@@ -1,0 +1,60 @@
+appId: my.group5.pulsecover
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Create Account"
+    timeout: 60000
+- takeScreenshot: r01-welcome
+- tapOn: "Continue as Guest"
+- extendedWaitUntil:
+    visible: "Connect My Wearable"
+    timeout: 20000
+- takeScreenshot: r02-guest-home
+- scroll
+- takeScreenshot: r03-guest-home-2
+- openLink: pulsecover:///server?url=http%3A%2F%2Flocalhost%3A3077&apply=1
+- extendedWaitUntil:
+    visible: "Connected to.*"
+    timeout: 60000
+- takeScreenshot: r04-server-ok
+- tapOn: "Back"
+- waitForAnimationToEnd
+- tapOn:
+    id: tab-account
+- scrollUntilVisible:
+    element: "Create Account"
+    direction: UP
+- tapOn:
+    id: btn-create-account
+- extendedWaitUntil:
+    visible:
+      id: f-full-name
+    timeout: 20000
+- tapOn:
+    id: f-full-name
+- inputText: "Aisha Rahman"
+- tapOn:
+    id: f-email
+- inputText: "aisha2@example.com"
+- tapOn:
+    id: f-date-of-birth
+- tapOn: "15"
+- tapOn: "OK"
+- tapOn:
+    id: f-password-min-8-characters
+- inputText: "Sunrise#2026"
+- hideKeyboard
+- tapOn:
+    id: f-confirm-password
+- inputText: "Sunrise#2026"
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: btn-create-account
+- tapOn:
+    id: btn-create-account
+- extendedWaitUntil:
+    visible: "Welcome back"
+    timeout: 40000
+- takeScreenshot: r05-member-home

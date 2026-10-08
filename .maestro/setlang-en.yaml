@@ -1,0 +1,14 @@
+appId: my.group5.pulsecover
+---
+- openLink: pulsecover://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+- waitForAnimationToEnd
+- scrollUntilVisible:
+    element:
+      id: lang-btn
+    direction: UP
+    timeout: 30000
+- tapOn:
+    id: lang-btn
+- tapOn:
+    id: lang-en
+- waitForAnimationToEnd

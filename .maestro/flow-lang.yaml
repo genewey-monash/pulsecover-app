@@ -1,0 +1,163 @@
+appId: my.group5.pulsecover
+---
+- openLink: pulsecover://expo-development-client/?url=http%3A%2F%2Flocalhost%3A8081
+- extendedWaitUntil:
+    visible:
+      id: lang-btn
+    timeout: 60000
+- tapOn:
+    id: lang-btn
+- tapOn:
+    id: lang-ta
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-tamil-home
+- tapOn:
+    id: tab-plans
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-tamil-plans
+- tapOn:
+    id: tab-wearable
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-tamil-wearable
+- tapOn:
+    id: tab-claims
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-tamil-claims
+- tapOn:
+    id: tab-account
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-tamil-account
+- tapOn:
+    id: tab-index
+- tapOn:
+    id: lang-btn
+- tapOn:
+    id: lang-zh
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-chinese-home
+- tapOn:
+    id: tab-plans
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-chinese-plans
+- tapOn:
+    id: tab-wearable
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-chinese-wearable
+- tapOn:
+    id: tab-claims
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-chinese-claims
+- tapOn:
+    id: tab-account
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-chinese-account
+- tapOn:
+    id: tab-index
+- tapOn:
+    id: lang-btn
+- tapOn:
+    id: lang-ms
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-malay-home
+- tapOn:
+    id: tab-plans
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-malay-plans
+- tapOn:
+    id: tab-wearable
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-malay-wearable
+- tapOn:
+    id: tab-claims
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-malay-claims
+- tapOn:
+    id: tab-account
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-malay-account
+- tapOn:
+    id: tab-index
+- tapOn:
+    id: lang-btn
+- tapOn:
+    id: lang-en
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-english-home
+- tapOn:
+    id: tab-plans
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-english-plans
+- tapOn:
+    id: tab-wearable
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-english-wearable
+- tapOn:
+    id: tab-claims
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-english-claims
+- tapOn:
+    id: tab-account
+- waitForAnimationToEnd:
+    timeout: 3000
+- waitForAnimationToEnd:
+    timeout: 3000
+- takeScreenshot: l-english-account
+- tapOn:
+    id: tab-index
