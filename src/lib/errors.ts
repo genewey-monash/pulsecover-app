@@ -10,7 +10,7 @@ export function errorText(e: unknown, t: (k: string) => string): string {
     if (/already exists/i.test(m)) return t('acc.err.exists');
     if (/invalid email/i.test(m)) return t('acc.err.email');
     if (/do not match/i.test(m)) return t('acc.err.match');
-    if (/at least 16/i.test(m)) return t('acc.err.dob');
+    if (/at least 1[68]/i.test(m)) return t('acc.err.dob');
     if (/at least 8/i.test(m)) return t('acc.err.pwlen');
     if (/too many/i.test(m)) return t('cb.err.many');
     if (/invalid phone/i.test(m)) return t('pf.err.phone');

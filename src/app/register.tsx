@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { View } from 'react-native';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { Button, ErrorBox, Field, Gap, Row, Screen, ScreenHeader, Txt, success } from '../components/ui';
-import { DateField, ageOf, strength, validEmail } from '../components/forms';
+import { DateField, adultCutoff, ageOf, strength, validEmail } from '../components/forms';
 import { useAuth } from '../lib/auth';
 import { errorText } from '../lib/errors';
 import { useI18n } from '../lib/i18n';
@@ -21,7 +21,7 @@ export default function Register() {
     const err = {
       name: f.name.trim().length >= 2 ? null : t('acc.err.name'),
       email: validEmail(f.email) ? null : t('acc.err.email'),
-      dob: f.dob && ageOf(f.dob) >= 16 ? null : t('acc.err.dob'),
+      dob: f.dob && ageOf(f.dob) >= 18 ? null : t('acc.err.dob'),
       pw: f.pw.length >= 8 ? null : t('acc.err.pwlen'),
       pw2: f.pw === f.pw2 ? null : t('acc.err.match'),
     };
@@ -37,7 +37,7 @@ export default function Register() {
       <ScreenHeader title={t('acc.register')} subtitle={t('acc.register.sub')} onBack={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
       <Field label={t('field.name')} value={f.name} onChangeText={set('name')} error={e.name} autoComplete="name" textContentType="name" left="person-outline" maxLength={100} />
       <Field ref={emailRef} label={t('field.email')} value={f.email} onChangeText={set('email')} error={e.email} autoCapitalize="none" autoCorrect={false} keyboardType="email-address" autoComplete="email" textContentType="emailAddress" left="mail-outline" />
-      <DateField label={t('field.dob')} value={f.dob} onChange={set('dob')} error={e.dob} max={new Date()} />
+      <DateField label={t('field.dob')} value={f.dob} onChange={set('dob')} error={e.dob} max={adultCutoff()} />
       <Field label={t('field.password')} value={f.pw} onChangeText={set('pw')} error={e.pw} secure autoCapitalize="none" textContentType="oneTimeCode" autoComplete="off" left="lock-closed-outline" />
       {f.pw ? (
         <View style={{ marginTop: 10 }}>

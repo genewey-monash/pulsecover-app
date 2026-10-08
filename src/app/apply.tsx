@@ -20,7 +20,7 @@ export default function Apply() {
   const [step, setStep] = useState(1);
   const [plan, setPlan] = useState(['A', 'B', 'C', 'D'].includes(String(p.plan)) ? String(p.plan) : 'A');
   const [sub, setSub] = useState(p.sub === '1');
-  const [ben, setBen] = useState(''); const [guard, setGuard] = useState(''); const [c1, setC1] = useState(false); const [c2, setC2] = useState(false);
+  const [ben, setBen] = useState(''); const [c1, setC1] = useState(false); const [c2, setC2] = useState(false);
   const [errs, setErrs] = useState<Record<string, string | null>>({}); const [top, setTop] = useState<string | null>(null); const [busy, setBusy] = useState(false);
   const [q, setQ] = useState<Quote | null>(null); const [qBusy, setQBusy] = useState(false);
   const [done, setDone] = useState<string | null>(null);
@@ -28,7 +28,6 @@ export default function Apply() {
   const conn = dash?.connections ?? [];
   const hasData = (dash?.metrics.length ?? 0) >= 7;
   const device = conn[0]?.provider ?? 'manual';
-  const minor = user ? ageOf(user.dob) < 18 : false;
   const metrics = useMemo(() => ({ steps: Number(p.steps ?? 7500), exerciseMin: Number(p.exerciseMin ?? 100), sleepHours: Number(p.sleepHours ?? 7.5), restingHr: Number(p.restingHr ?? 66) }), [p.steps, p.exerciseMin, p.sleepHours, p.restingHr]);
 
   useEffect(() => { if (user && !dash) refresh(); }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -53,8 +52,8 @@ export default function Apply() {
   const next = () => {
     setTop(null);
     if (step === 3) {
-      const e = { ben: ben.trim().length >= 2 ? null : t('common.required') + ': ' + t('apply.ben'), guard: minor && guard.trim().length < 2 ? t('common.required') + ': ' + t('apply.guardian') : null };
-      setErrs(e); if (e.ben || e.guard) return;
+      const e = { ben: ben.trim().length >= 2 ? null : t('common.required') + ': ' + t('apply.ben') };
+      setErrs(e); if (e.ben) return;
     }
     setStep((s) => s + 1);
   };
@@ -62,7 +61,7 @@ export default function Apply() {
     if (!c1 || !c2) { setTop(t('common.required')); return; }
     setBusy(true); setTop(null);
     try {
-      const r = await api<{ number: string }>('/apply', { ...metrics, plan, device, beneficiary: ben.trim(), guardian: guard.trim(), consentData: true, consentTerms: true, appSubscription: sub });
+      const r = await api<{ number: string }>('/apply', { ...metrics, plan, device, beneficiary: ben.trim(), consentData: true, consentTerms: true, appSubscription: sub });
       success(); setDone(r.number); await refresh();
     } catch (e) { setTop(errorText(e, t)); } finally { setBusy(false); }
   };
@@ -139,7 +138,6 @@ export default function Apply() {
       {step === 3 ? (
         <>
           <Field label={t('apply.ben')} value={ben} onChangeText={(v) => { setBen(v); setErrs((e) => ({ ...e, ben: null })); }} error={errs.ben} left="person-outline" maxLength={100} />
-          {minor ? <Field label={t('apply.guardian')} value={guard} onChangeText={(v) => { setGuard(v); setErrs((e) => ({ ...e, guard: null })); }} error={errs.guard} left="people-outline" maxLength={100} /> : null}
           <Gap h={20} />
           <ButtonRow><Button title={t('apply.back')} variant="ghost" style={{ flex: 1 }} onPress={() => setStep(2)} /><Button title={t('apply.next')} style={{ flex: 2 }} onPress={next} /></ButtonRow>
         </>

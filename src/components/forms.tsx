@@ -7,6 +7,7 @@ import { useTheme } from '../lib/theme';
 
 export const EMAIL = /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[A-Za-z]{2,}$/;
 export const validEmail = (s: string) => EMAIL.test(s.trim()) && !s.includes('..');
+export const adultCutoff = () => { const d = new Date(); d.setFullYear(d.getFullYear() - 18); return d; };
 export const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 export const parseIso = (s: string) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null; };
 export function ageOf(dob: string) {

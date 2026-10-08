@@ -34,7 +34,7 @@ function TopBar({ left }: { left: React.ReactNode }) {
 /* ------------------------------------------------------------------ guests */
 function GuestHome() {
   const router = useRouter(); const { t } = useI18n(); const { c } = useTheme(); const { cols, width } = useLayout();
-  const stats: [string, string][] = [['RM600', 'home.stat1'], ['±15%', 'home.stat2'], ['3', 'home.stat3'], ['16+', 'home.stat4']];
+  const stats: [string, string][] = [['RM600', 'home.stat1'], ['±15%', 'home.stat2'], ['3', 'home.stat3'], ['18+', 'home.stat4']];
   const steps = [['link', 'home.s1'], ['calculator', 'home.s2'], ['pulse', 'home.s3'], ['refresh-circle', 'home.s4']] as const;
   const bens = [['trending-down', 'home.ben1'], ['lock-closed', 'home.ben2'], ['document-text', 'home.ben3'], ['flash', 'home.ben4'], ['shield-checkmark', 'home.ben5'], ['gift', 'home.ben6']] as const;
   return (

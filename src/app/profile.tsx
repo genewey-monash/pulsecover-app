@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Avatar, Button, Chip, ErrorBox, Field, Gap, Notice, Row, Screen, ScreenHeader, Txt, success } from '../components/ui';
-import { DateField, ageOf } from '../components/forms';
+import { DateField, adultCutoff, ageOf } from '../components/forms';
 import { api } from '../lib/api';
 import { User, useAuth } from '../lib/auth';
 import { errorText } from '../lib/errors';
@@ -20,7 +20,7 @@ export default function Profile() {
     const err = {
       name: f.name.trim().length >= 2 ? null : t('acc.err.name'),
       phone: !f.phone.trim() || /^\+?[0-9][0-9 \-]{6,18}$/.test(f.phone.trim()) ? null : t('pf.err.phone'),
-      dob: f.dob && ageOf(f.dob) >= 16 ? null : t('acc.err.dob'),
+      dob: f.dob && ageOf(f.dob) >= 18 ? null : t('acc.err.dob'),
     };
     setE(err); if (Object.values(err).some(Boolean)) { setTop(t('pf.fix')); return; }
     setBusy(true);
@@ -37,7 +37,7 @@ export default function Profile() {
       <Field label={t('field.name')} value={f.name} onChangeText={set('name')} error={e.name} left="person-outline" maxLength={100} autoComplete="name" />
       <Field label={t('field.email')} value={user.email} disabled left="mail-outline" help={t('pf.email.note')} editable={false} />
       <Field label={t('field.phone')} value={f.phone} onChangeText={set('phone')} error={e.phone} keyboardType="phone-pad" left="call-outline" maxLength={20} />
-      <DateField label={t('field.dob')} value={f.dob} onChange={set('dob')} error={e.dob} max={new Date()} />
+      <DateField label={t('field.dob')} value={f.dob} onChange={set('dob')} error={e.dob} max={adultCutoff()} />
       <Field label={t('pf.address')} value={f.address} onChangeText={set('address')} left="location-outline" maxLength={200} />
       <Txt v="label" style={{ marginTop: 16, marginBottom: 8 }}>{t('pf.lang')}</Txt>
       <Row wrap gap={8}>{LANGS.map((l) => <Chip key={l.code} label={l.label} on={f.lang === l.code} onPress={() => { setF((p) => ({ ...p, lang: l.code })); setOk(false); }} />)}</Row>

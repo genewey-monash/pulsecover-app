@@ -36,7 +36,7 @@ appId: my.group5.pulsecover
 - inputText: "Aisha Rahman"
 - tapOn:
     id: f-email
-- inputText: "aisha2@example.com"
+- inputText: "aisha3@example.com"
 - tapOn:
     id: f-date-of-birth
 - tapOn: "15"
