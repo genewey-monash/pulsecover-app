@@ -1,18 +1,18 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, Easing, Image, Platform, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Txt, tap, useTC } from '../components/ui';
 import { IMG } from '../components/common';
+import { DrawerContext, useDrawer } from './drawerCtx';
 import { useAuth } from './auth';
 import { useI18n } from './i18n';
 import { useTheme } from './theme';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
-interface DrawerCtx { open: boolean; show: () => void; hide: () => void }
-const Ctx = createContext<DrawerCtx>({ open: false, show: () => {}, hide: () => {} });
-export const useDrawer = () => useContext(Ctx);
+export { useDrawer };
+const Ctx = DrawerContext;
 
 export function DrawerProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);

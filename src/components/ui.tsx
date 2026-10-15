@@ -9,10 +9,10 @@ import * as Haptics from 'expo-haptics';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 import { Image as ExpoImage } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter } from 'expo-router';
 import { radius, useTheme } from '../lib/theme';
 import { useI18n } from '../lib/i18n';
 import { looksLikeSentence, titleCase } from '../lib/titlecase';
+import { useDrawer } from '../lib/drawerCtx';
 
 /** Title Case for English UI labels (buttons, tabs, chips, headings). Other languages are left untouched. */
 export function useTC() {
@@ -95,15 +95,17 @@ export function Screen({ children, scroll = true, refreshing, onRefresh, padded 
 }
 
 export function ScreenHeader({ title, subtitle, right, onBack, back = true }: { title: string; subtitle?: string; right?: React.ReactNode; onBack?: () => void; back?: boolean }) {
-  const router = useRouter(); const { c } = useTheme();
+  const { c } = useTheme(); const { show } = useDrawer();
+  // Inner screens open the left menu (it has Home and everything else). A step-by-step flow still gets its own back arrow.
+  const button = onBack ? { icon: 'chevron-back' as const, label: 'Back', press: onBack } : { icon: 'menu' as const, label: 'Menu', press: show };
   return (
     <View style={{ paddingTop: 8, paddingBottom: 14 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 44 }}>
         {back ? (
-          <Pressable accessibilityRole="button" accessibilityLabel="Back" hitSlop={10}
-            onPress={() => { tap(); if (onBack) onBack(); else if (router.canGoBack()) router.back(); else router.replace('/'); }}
+          <Pressable accessibilityRole="button" accessibilityLabel={button.label} hitSlop={10}
+            onPress={() => { tap(); button.press(); }}
             style={({ pressed }) => ({ width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: pressed ? c.line : c.bgAlt, marginRight: 12 })}>
-            <Icon name="chevron-back" size={22} />
+            <Icon name={button.icon} size={button.icon === 'menu' ? 26 : 22} />
           </Pressable>
         ) : null}
         <View style={{ flex: 1 }}>
