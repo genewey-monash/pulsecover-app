@@ -20,6 +20,20 @@ const head = [
 ].join('\n  ');
 html = html.replace('</head>', '  ' + head + '\n</head>');
 fs.writeFileSync(path.join(out, 'index.html'), html);
+// Vercel never deploys folders named node_modules, so the bundled fonts/images are moved to assets/vendor
+const nm = path.join(out, 'assets', 'node_modules');
+if (fs.existsSync(nm)) {
+  fs.renameSync(nm, path.join(out, 'assets', 'vendor'));
+  const walk = (d) => fs.readdirSync(d, { withFileTypes: true }).forEach((e) => {
+    const f = path.join(d, e.name);
+    if (e.isDirectory()) return walk(f);
+    if (/\.(js|html|json|css|map)$/.test(e.name)) {
+      const txt = fs.readFileSync(f, 'utf8');
+      if (txt.includes('assets/node_modules/')) fs.writeFileSync(f, txt.split('assets/node_modules/').join('assets/vendor/'));
+    }
+  });
+  walk(out);
+}
 fs.rmSync(target, { recursive: true, force: true });
 fs.cpSync(out, target, { recursive: true });
 console.log('web app copied to', target);
