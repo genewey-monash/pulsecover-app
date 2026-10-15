@@ -1,5 +1,5 @@
 export type PlanId = 'A' | 'B' | 'C' | 'D';
-export interface Plan { id: PlanId; base: number; cover: number; type: 'individual' | 'family'; buy: ('online' | 'advisor')[]; isNew: boolean }
+export interface Plan { id: PlanId; base: number; cover: number; type: 'individual' | 'family'; isNew: boolean }
 export interface Metrics { steps: number; exerciseMin: number; sleepHours: number; restingHr: number }
 export interface Quote {
   base: number; band: number; score: number; grade: string;

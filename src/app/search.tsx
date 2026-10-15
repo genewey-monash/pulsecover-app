@@ -23,7 +23,7 @@ export default function Search() {
       { href: '/calculator', icon: 'calculator', title: t('calc.h1'), sub: t('calc.sub'), group: tl, kw: 'calculator premium price quote slider steps sleep' },
       { href: '/compare', icon: 'git-compare', title: t('nav.compare'), sub: t('cmpt.h'), group: tl, kw: 'compare plans table' },
       { href: '/apply', icon: 'shield-checkmark', title: t('apply.h1'), sub: t('apply.sub'), group: tl, kw: 'apply get covered buy policy join' },
-      { href: '/callback', icon: 'call', title: t('cb.h'), sub: t('cb.sub'), group: tl, kw: 'call back advisor talk phone request' },
+      { href: '/callback', icon: 'call', title: t('cb.h'), sub: t('cb.sub'), group: tl, kw: 'call back talk phone request' },
       { href: '/contact', icon: 'mail', title: t('ct.h1'), sub: t('ct.sub'), group: pg, kw: 'contact email message support' },
       { href: '/business', icon: 'briefcase', title: t('sme.h1'), sub: t('sme.sub'), group: pg, kw: 'business sme company group employees' },
       { href: '/how', icon: 'school', title: t('how.h1'), sub: t('how.sub'), group: pg, kw: 'how pricing works rules rating grade' },

@@ -6,10 +6,10 @@ const BAND = 0.15;
 const COMMISSION = 0.25;
 // Placeholder plans (names/coverage are example values to be replaced). Plan A matches the report: RM600 base, term life + health rider.
 const PLANS = {
-  A: { id: 'A', base: 600, cover: 100000, type: 'individual', buy: ['online'], isNew: true },
-  B: { id: 'B', base: 900, cover: 250000, type: 'individual', buy: ['online', 'advisor'], isNew: false },
-  C: { id: 'C', base: 1500, cover: 500000, type: 'family', buy: ['advisor'], isNew: false },
-  D: { id: 'D', base: 2400, cover: 1000000, type: 'family', buy: ['advisor'], isNew: true }
+  A: { id: 'A', base: 600, cover: 100000, type: 'individual', isNew: true },
+  B: { id: 'B', base: 900, cover: 250000, type: 'individual', isNew: false },
+  C: { id: 'C', base: 1500, cover: 500000, type: 'family', isNew: false },
+  D: { id: 'D', base: 2400, cover: 1000000, type: 'family', isNew: true }
 };
 const planOf = (id) => PLANS[id] || PLANS.A;
 const APP_SUB_MONTHLY = 5;

@@ -15,12 +15,11 @@ const covs = (p: Plan) => 'ABCDEF'.slice(0, ({ A: 3, B: 4, C: 5, D: 6 } as Recor
 export default function PlansTab() {
   const router = useRouter(); const { t } = useI18n(); const { c } = useTheme(); const toast = useToast(); const { width } = useLayout();
   const [type, setType] = useState<'all' | 'individual' | 'family'>('all');
-  const [buy, setBuy] = useState<'all' | 'online' | 'advisor'>('all');
   const [idx, setIdx] = useState(0);
   const [help, setHelp] = useState(false);
   const listRef = useRef<FlatList<Plan>>(null);
   const cmp = useCompare();
-  const list = useMemo(() => Object.values(PLANS).filter((p) => (type === 'all' || p.type === type) && (buy === 'all' || p.buy.includes(buy))), [type, buy]);
+  const list = useMemo(() => Object.values(PLANS).filter((p) => type === 'all' || p.type === type), [type]);
   const cardW = Math.min(width, 520) - 56;
   const step = cardW + 12;
   const pick = (fn: () => void) => { fn(); setIdx(0); listRef.current?.scrollToOffset({ offset: 0, animated: false }); };
@@ -32,16 +31,14 @@ export default function PlansTab() {
         <Txt v="small" color={c.mute} style={{ marginTop: 2 }} numberOfLines={2}>{t('plans.sub')}</Txt>
         <Pressable onPress={() => setHelp(true)} accessibilityRole="button" hitSlop={8} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8, marginBottom: 12, alignSelf: 'flex-start' }}>
           <Icon name="information-circle" size={20} color={c.accent} />
-          <Txt w="700" color={c.accent}>{t('app.diff.h')}</Txt>
+          <Txt w="700" color={c.accent}>{t('diff.h')}</Txt>
         </Pressable>
       </View>
       {/* one compact, swipeable filter strip instead of two stacked rows */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 18, paddingVertical: 4, gap: 8, alignItems: 'center' }} style={{ flexGrow: 0 }}>
-        <Chip label={t('plans.all')} on={type === 'all' && buy === 'all'} onPress={() => pick(() => { setType('all'); setBuy('all'); })} />
+        <Chip label={t('plans.all')} on={type === 'all'} onPress={() => pick(() => setType('all'))} />
         <Chip label={t('type.individual')} on={type === 'individual'} onPress={() => pick(() => setType(type === 'individual' ? 'all' : 'individual'))} icon="person" />
         <Chip label={t('type.family')} on={type === 'family'} onPress={() => pick(() => setType(type === 'family' ? 'all' : 'family'))} icon="people" />
-        <Chip label={t('buy.online')} on={buy === 'online'} onPress={() => pick(() => setBuy(buy === 'online' ? 'all' : 'online'))} icon="phone-portrait" />
-        <Chip label={t('buy.advisor')} on={buy === 'advisor'} onPress={() => pick(() => setBuy(buy === 'advisor' ? 'all' : 'advisor'))} icon="headset" />
       </ScrollView>
       {list.length === 0 ? <View style={{ padding: 18 }}><EmptyState icon="search" title={t('plan.none')} /></View> : (
         <FlatList
@@ -61,7 +58,6 @@ export default function PlansTab() {
                   </Row>
                   <Row wrap gap={6} style={{ marginTop: 8 }}>
                     <Badge label={t(`type.${p.type}`)} tone="dark" />
-                    {p.buy.map((b) => <Badge key={b} label={t(`buy.${b}`)} tone="solid" />)}
                   </Row>
                 </View>
                 <View style={{ padding: 16 }}>
@@ -95,14 +91,17 @@ export default function PlansTab() {
       <Txt v="caption" color={c.mute} align="center" style={{ marginTop: 12, paddingHorizontal: 24 }}>{t('plans.note')}</Txt>
       </ScrollView>
       <CompareBar />
-      <Sheet visible={help} onClose={() => setHelp(false)} title={t('app.diff.h')}>
-        {([['person', 'type.individual', 'app.diff.individual'], ['people', 'type.family', 'app.diff.family'], ['phone-portrait', 'buy.online', 'app.diff.online'], ['headset', 'buy.advisor', 'app.diff.advisor']] as const).map(([ic, k, d]) => (
-          <Row key={k} gap={12} align="flex-start" style={{ marginBottom: 14 }}>
-            <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: c.redT, alignItems: 'center', justifyContent: 'center' }}><Icon name={ic} size={20} color={c.accent} /></View>
-            <View style={{ flex: 1 }}><Txt w="800">{t(k)}</Txt><Txt v="small" color={c.mute}>{t(d)}</Txt></View>
-          </Row>
+      <Sheet visible={help} onClose={() => setHelp(false)} title={t('diff.h')}>
+        {([['person', 'diff.ind.h', ['diff.ind.1', 'diff.ind.2', 'diff.ind.3']], ['people', 'diff.fam.h', ['diff.fam.1', 'diff.fam.2', 'diff.fam.3']]] as const).map(([ic, h, pts]) => (
+          <View key={h} style={{ marginBottom: 16 }}>
+            <Row gap={10} style={{ marginBottom: 6 }}>
+              <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: c.redT, alignItems: 'center', justifyContent: 'center' }}><Icon name={ic} size={19} color={c.accent} /></View>
+              <Txt v="h3">{t(h)}</Txt>
+            </Row>
+            {pts.map((k) => <Row key={k} gap={10} align="flex-start" style={{ marginTop: 6, paddingLeft: 4 }}><Icon name="ellipse" size={8} color={c.accent} style={{ marginTop: 8 }} /><Txt style={{ flex: 1 }}>{t(k)}</Txt></Row>)}
+          </View>
         ))}
-        <Txt v="caption" color={c.mute}>{t('app.diff.note')}</Txt>
+        <Txt v="small" color={c.mute}>{t('diff.same')}</Txt>
       </Sheet>
     </View>
   );

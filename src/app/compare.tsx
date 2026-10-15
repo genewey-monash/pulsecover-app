@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Button, CardGrid, Gap, Screen, ScreenHeader, Txt, Row, useLayout } from '../components/ui';
+import { Button, Gap, Screen, ScreenHeader, Txt, Row, useLayout } from '../components/ui';
 import { rm } from '../lib/data';
 import { useI18n } from '../lib/i18n';
 import { PLANS } from '../lib/pricing';
@@ -16,7 +16,7 @@ export default function Compare() {
   const plans = ids.map((id) => PLANS[id as keyof typeof PLANS]);
   const rows: [string, (p: typeof plans[number]) => string][] = [
     ['cmpt.price', (p) => rm(p.base, 0)], ['cmpt.best', (p) => rm(p.base * 0.85, 0)], ['cmpt.worst', (p) => rm(p.base * 1.15, 0)], ['cmpt.cover', (p) => rm(p.cover, 0)],
-    ['cmpt.type', (p) => t(`type.${p.type}`)], ['cmpt.buy', (p) => p.buy.map((b) => t(`buy.${b}`)).join(', ')], ['cmpt.cov', (p) => covs(p.id).map((k) => `• ${t(`cov.${k}`)}`).join('\n')],
+    ['cmpt.type', (p) => t(`type.${p.type}`)], ['cmpt.cov', (p) => covs(p.id).map((k) => `• ${t(`cov.${k}`)}`).join('\n')],
   ];
   const labelW = 112, colW = Math.max(112, Math.floor((Math.min(width, 760) - 36 - labelW) / 2.3)); // third column peeks in so it is clear the table scrolls
   return (
@@ -34,10 +34,18 @@ export default function Compare() {
               {plans.map((p) => <View key={p.id} style={{ width: colW, padding: 12 }}><Txt v="small" w={i < 4 ? '700' : '400'}>{f(p)}</Txt></View>)}
             </Row>
           ))}
+          {/* each plan's own buttons sit under its column */}
+          <Row gap={0} align="flex-start" style={{ borderTopWidth: 1, borderTopColor: c.line, backgroundColor: c.surface }}>
+            <View style={{ width: labelW }} />
+            {plans.map((p) => (
+              <View key={p.id} style={{ width: colW, padding: 10, gap: 8 }}>
+                <Button title={t('plan.quote')} variant="ghost" small onPress={() => router.push({ pathname: '/calculator', params: { plan: p.id } })} />
+                <Button title={t('plan.apply')} small onPress={() => router.push({ pathname: '/apply', params: { plan: p.id } })} />
+              </View>
+            ))}
+          </Row>
         </View>
       </ScrollView>
-      <Gap h={20} />
-      <CardGrid cols={2}>{plans.map((p) => <Button key={p.id} title={`${t('plan.apply')} ${p.id}`} onPress={() => router.push({ pathname: '/apply', params: { plan: p.id } })} />)}</CardGrid>
       {cmp.selected.length ? <><Gap h={10} /><Button title={t('cmpbar.clear')} variant="ghost" small onPress={() => { cmp.clear(); router.back(); }} /></> : null}
     </Screen>
   );

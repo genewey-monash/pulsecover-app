@@ -12,6 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { radius, useTheme } from '../lib/theme';
 import { useI18n } from '../lib/i18n';
 import { looksLikeSentence, titleCase } from '../lib/titlecase';
+import { usePathname, useRouter } from 'expo-router';
 import { useDrawer } from '../lib/drawerCtx';
 
 /** Title Case for English UI labels (buttons, tabs, chips, headings). Other languages are left untouched. */
@@ -94,10 +95,14 @@ export function Screen({ children, scroll = true, refreshing, onRefresh, padded 
   );
 }
 
+/** Pages opened from the left menu: they show the menu button, not a back arrow. */
+const TOP_LEVEL = ['/calculator', '/compare', '/referral', '/faq', '/contact', '/how', '/investors', '/privacy', '/business', '/callback', '/apply', '/search'];
 export function ScreenHeader({ title, subtitle, right, onBack, back = true }: { title: string; subtitle?: string; right?: React.ReactNode; onBack?: () => void; back?: boolean }) {
-  const { c } = useTheme(); const { show } = useDrawer();
-  // Inner screens open the left menu (it has Home and everything else). A step-by-step flow still gets its own back arrow.
-  const button = onBack ? { icon: 'chevron-back' as const, label: 'Back', press: onBack } : { icon: 'menu' as const, label: 'Menu', press: show };
+  const { c } = useTheme(); const { show } = useDrawer(); const path = usePathname(); const router = useRouter();
+  // Pages reached from the menu get the menu button; detail pages opened from inside a page get a back arrow.
+  const isTop = TOP_LEVEL.includes(path);
+  const goBack = () => { if (onBack) onBack(); else if (router.canGoBack()) router.back(); else router.replace('/(tabs)' as never); };
+  const button = !isTop || onBack ? { icon: 'chevron-back' as const, label: 'Back', press: goBack } : { icon: 'menu' as const, label: 'Menu', press: show };
   return (
     <View style={{ paddingTop: 8, paddingBottom: 14 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', minHeight: 44 }}>
