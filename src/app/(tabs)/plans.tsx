@@ -1,8 +1,8 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { FlatList, ScrollView, View } from 'react-native';
+import { FlatList, Pressable, ScrollView, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Badge, Button, ButtonRow, Card, Chip, EmptyState, Gap, Icon, Row, Txt, useLayout } from '../../components/ui';
+import { Badge, Button, ButtonRow, Card, Chip, EmptyState, Gap, Icon, Row, Sheet, Txt, useLayout } from '../../components/ui';
 import { rm } from '../../lib/data';
 import { useI18n } from '../../lib/i18n';
 import { useToast } from '../../lib/overlays';
@@ -17,6 +17,7 @@ export default function PlansTab() {
   const [type, setType] = useState<'all' | 'individual' | 'family'>('all');
   const [buy, setBuy] = useState<'all' | 'online' | 'advisor'>('all');
   const [idx, setIdx] = useState(0);
+  const [help, setHelp] = useState(false);
   const listRef = useRef<FlatList<Plan>>(null);
   const cmp = useCompare();
   const list = useMemo(() => Object.values(PLANS).filter((p) => (type === 'all' || p.type === type) && (buy === 'all' || p.buy.includes(buy))), [type, buy]);
@@ -27,7 +28,11 @@ export default function PlansTab() {
     <View style={{ flex: 1 }}>
       <View style={{ paddingHorizontal: 18, paddingTop: 14 }}>
         <Txt v="h2" fit>{t('plans.h1')}</Txt>
-        <Txt v="small" color={c.mute} style={{ marginTop: 2, marginBottom: 12 }} numberOfLines={2}>{t('plans.sub')}</Txt>
+        <Txt v="small" color={c.mute} style={{ marginTop: 2 }} numberOfLines={2}>{t('plans.sub')}</Txt>
+        <Pressable onPress={() => setHelp(true)} accessibilityRole="button" hitSlop={8} style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 8, marginBottom: 12, alignSelf: 'flex-start' }}>
+          <Icon name="information-circle" size={20} color={c.accent} />
+          <Txt w="700" color={c.accent}>{t('app.diff.h')}</Txt>
+        </Pressable>
       </View>
       {/* one compact, swipeable filter strip instead of two stacked rows */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 18, gap: 8, alignItems: 'center' }} style={{ flexGrow: 0 }}>
@@ -88,6 +93,15 @@ export default function PlansTab() {
       ) : null}
       <Txt v="caption" color={c.mute} align="center" style={{ marginTop: 10, paddingHorizontal: 24 }} numberOfLines={2}>{t('plans.note')}</Txt>
       <CompareBar />
+      <Sheet visible={help} onClose={() => setHelp(false)} title={t('app.diff.h')}>
+        {([['person', 'type.individual', 'app.diff.individual'], ['people', 'type.family', 'app.diff.family'], ['phone-portrait', 'buy.online', 'app.diff.online'], ['headset', 'buy.advisor', 'app.diff.advisor']] as const).map(([ic, k, d]) => (
+          <Row key={k} gap={12} align="flex-start" style={{ marginBottom: 14 }}>
+            <View style={{ width: 40, height: 40, borderRadius: 13, backgroundColor: c.redT, alignItems: 'center', justifyContent: 'center' }}><Icon name={ic} size={20} color={c.accent} /></View>
+            <View style={{ flex: 1 }}><Txt w="800">{t(k)}</Txt><Txt v="small" color={c.mute}>{t(d)}</Txt></View>
+          </Row>
+        ))}
+        <Txt v="caption" color={c.mute}>{t('app.diff.note')}</Txt>
+      </Sheet>
     </View>
   );
 }

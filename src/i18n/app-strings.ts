@@ -2,6 +2,12 @@
 export const appStrings: Record<string, string[]> = {
   'app.seg.devices': ['Devices', '设备', 'Peranti', 'சாதனங்கள்'],
   'app.seg.settings': ['Settings', '设置', 'Tetapan', 'அமைப்புகள்'],
+  'app.diff.h': ["What's the difference?", '有什么区别？', 'Apakah bezanya?', 'என்ன வேறுபாடு?'],
+  'app.diff.individual': ['One plan that covers you, one person.', '只保障您一人的计划。', 'Satu pelan yang melindungi anda seorang.', 'உங்கள் ஒருவரை மட்டும் காக்கும் திட்டம்.'],
+  'app.diff.family': ['One plan that covers you and your family members together.', '同时保障您和家人的计划。', 'Satu pelan yang melindungi anda dan ahli keluarga bersama.', 'நீங்களும் உங்கள் குடும்ப உறுப்பினர்களும் சேர்ந்து காக்கப்படும் ஒரே திட்டம்.'],
+  'app.diff.online': ['You sign up yourself in the app, in minutes. No agent needed.', '您自己在应用内几分钟完成投保，无需代理。', 'Anda daftar sendiri dalam app, dalam beberapa minit. Tiada ejen diperlukan.', 'செயலியிலேயே நீங்களே சில நிமிடங்களில் பதிவு செய்யலாம். முகவர் தேவையில்லை.'],
+  'app.diff.advisor': ['An advisor helps you choose and sign up, and calls you back within 2 working days.', '由顾问协助您选择和投保，并在 2 个工作日内回电。', 'Penasihat membantu anda memilih dan mendaftar, dan menghubungi anda semula dalam 2 hari bekerja.', 'ஆலோசகர் தேர்வு செய்யவும் பதிவு செய்யவும் உதவி, 2 வேலை நாட்களுக்குள் உங்களை அழைப்பார்.'],
+  'app.diff.note': ['Some plans can be bought both ways. Plan names and prices are examples.', '部分计划两种方式都可购买。计划名称和价格仅为示例。', 'Sesetengah pelan boleh dibeli kedua-dua cara. Nama dan harga pelan ialah contoh.', 'சில திட்டங்களை இரு வழிகளிலும் வாங்கலாம். திட்டப் பெயர்கள், விலைகள் எடுத்துக்காட்டுகள்.'],
   'app.menu': ['Menu', '菜单', 'Menu', 'மெனு'],
   'app.tap': ['Tap to connect', '点击连接', 'Ketik untuk sambung', 'இணைக்கத் தட்டவும்'],
   'app.connecting': ['Connecting...', '连接中…', 'Menyambung…', 'இணைக்கிறது…'],
