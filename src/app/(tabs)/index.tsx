@@ -61,12 +61,12 @@ function PromoStrip({ slides, width }: { slides: Slide[]; width: number }) {
 /** Home = one status, one big action, a few shortcuts. Everything else is one tap away in the menu. */
 export default function Home() {
   const router = useRouter(); const { t } = useI18n(); const tc = useTC(); const { c, isDark } = useTheme();
-  const { user } = useAuth(); const { dash, refresh, loading } = useDash();
+  const { user } = useAuth(); const { dash, refresh, loading, guestConnect } = useDash();
   const { width, height } = useWindowDimensions();
   const [ask, setAsk] = useState(false); const [busy, setBusy] = useState(false); const [err, setErr] = useState<string | null>(null);
 
   const conn = dash?.connections ?? [];
-  const on = !!user && conn.length > 0;
+  const on = conn.length > 0; // guests can connect too
   const provider = conn[0]?.provider;
   const grade = dash?.grade ?? null; const score = dash?.score30 ?? null;
   const ring = Math.min(200, Math.max(150, Math.round(Math.min(width * 0.5, height * 0.25))));
@@ -89,13 +89,15 @@ export default function Home() {
 
   const press = () => {
     tap();
-    if (!user) { router.push('/login'); return; }
     if (on) { router.navigate('/(tabs)/wearable'); return; }
     setErr(null); setAsk(true);
   };
   const connect = async () => {
     setBusy(true); setErr(null);
-    try { await api('/connect', { provider: 'healthconnect', consent: true }); success(); setAsk(false); await refresh(); }
+    try {
+      if (user) { await api('/connect', { provider: 'healthconnect', consent: true }); await refresh(); } else await guestConnect('healthconnect');
+      success(); setAsk(false);
+    }
     catch (e) { setErr(errorText(e, t)); }
     finally { setBusy(false); }
   };

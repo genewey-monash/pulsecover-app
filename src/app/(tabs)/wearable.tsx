@@ -16,7 +16,7 @@ const ICON: Record<string, React.ComponentProps<typeof Icon>['name']> = { health
 const REASONS = ['illness', 'injury', 'travel', 'pregnancy', 'other'] as const;
 
 export default function WearableTab() {
-  const router = useRouter(); const { t } = useI18n(); const { c } = useTheme(); const { user } = useAuth(); const { dash, refresh, loading } = useDash(); const toast = useToast();
+  const router = useRouter(); const { t } = useI18n(); const { c } = useTheme(); const { user } = useAuth(); const { dash, refresh, loading, guestConnect, guestDisconnect } = useDash(); const toast = useToast();
   const [seg, setSeg] = useState<'devices' | 'rating' | 'settings'>('devices');
   const [ask, setAsk] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -27,17 +27,17 @@ export default function WearableTab() {
   const [days, setDays] = useState('14'); const [reason, setReason] = useState<typeof REASONS[number]>('illness'); const [pm, setPm] = useState<{ ok: boolean; text: string } | null>(null);
   const conn = new Set((dash?.connections ?? []).map((x) => x.provider));
 
-  const startConnect = (p: string) => { if (!user) { router.push('/login'); return; } setErr(null); setAsk(p); };
+  const startConnect = (p: string) => { setErr(null); setAsk(p); }; // guests can connect too; an account is only needed to apply
   const doConnect = async () => {
     if (!ask) return; setBusy(true); setErr(null);
     try {
-      const r = await api<{ provider: string; days: number; quote: Quote }>('/connect', { provider: ask, consent: true });
-      success(); setAsk(null); setDone(r); await refresh();
+      if (!user) { await guestConnect(ask); success(); setAsk(null); }
+      else { const r = await api<{ provider: string; days: number; quote: Quote }>('/connect', { provider: ask, consent: true }); success(); setAsk(null); setDone(r); await refresh(); }
     } catch (e) { setErr(errorText(e, t)); } finally { setBusy(false); }
   };
   const doDisconnect = async () => {
     if (!discon) return; setBusy(true);
-    try { await api('/disconnect', { provider: discon }); setDiscon(null); setDone(null); await refresh(); toast(t('connect.disc')); }
+    try { if (!user) await guestDisconnect(discon); else await api('/disconnect', { provider: discon }); setDiscon(null); setDone(null); await refresh(); toast(t('connect.disc')); }
     catch (e) { setErr(errorText(e, t)); } finally { setBusy(false); }
   };
   const sync = async () => {
@@ -85,7 +85,7 @@ export default function WearableTab() {
       ) : null}
 
       {seg === 'rating' ? (
-        user && dash && conn.size > 0 ? (
+        dash && conn.size > 0 ? (
           <>
             {done ? <><Notice text={`${t('connect.done')} ${done.days}`} /><Gap h={12} /></> : null}
             <StatsSummary dash={dash} />
@@ -104,7 +104,7 @@ export default function WearableTab() {
             <Txt v="h3">{t('app.off.title')}</Txt>
             <Txt color={c.mute} style={{ marginTop: 6 }}>{t('app.off.sub')}</Txt>
             <Gap h={14} />
-            <Button title={t('connect.cta')} icon="pulse" onPress={() => (user ? setSeg('devices') : router.push('/login'))} />
+            <Button title={t('connect.cta')} icon="pulse" onPress={() => setSeg('devices')} />
           </Card>
         )
       ) : null}
