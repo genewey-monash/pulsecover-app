@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { Badge, Button, Card, EmptyState, Gap, Hero, Icon, Row, Screen, Skeleton, Txt, tap } from '../../components/ui';
-import { IMG, LangButton } from '../../components/common';
+import { Badge, Button, Card, EmptyState, Gap, Icon, Row, Screen, Skeleton, Txt, tap } from '../../components/ui';
 import { api } from '../../lib/api';
 import { Claim, rm, useDash } from '../../lib/data';
 import { useAuth } from '../../lib/auth';
@@ -48,11 +47,8 @@ export default function ClaimsTab() {
   const load = useCallback(async () => { try { setClaims(await api<Claim[]>('/claims')); } catch { /* keep previous list */ } }, []);
   useFocusEffect(useCallback(() => { if (user) { refresh(); load(); } }, [user, refresh, load]));
   return (
-    <Screen refreshing={loading} onRefresh={user ? async () => { await refresh(); await load(); } : undefined} bottomPad={130}>
-      <Row style={{ justifyContent: 'space-between', paddingTop: 10, paddingBottom: 8 }}><View style={{ flex: 1 }}><Txt v="h1" fit>{t('cl.h1')}</Txt></View><LangButton /></Row>
-      <Txt color={c.mute} style={{ marginBottom: 14 }}>{t('cl.sub')}</Txt>
-      <Hero source={IMG.claims} height={150} />
-      <Gap h={18} />
+    <Screen refreshing={loading} onRefresh={user ? async () => { await refresh(); await load(); } : undefined} bottomPad={32}>
+      <View style={{ paddingTop: 14, paddingBottom: 14 }}><Txt v="h2" fit>{t('cl.h1')}</Txt><Txt v="small" color={c.mute} style={{ marginTop: 2 }} numberOfLines={2}>{t('cl.sub')}</Txt></View>
       {!user ? (
         <Card><Txt v="h3">{t('apply.login.first')}</Txt><Gap h={14} /><Button title={t('nav.login')} onPress={() => router.push('/login')} /><Gap h={10} /><Button title={t('acc.register')} variant="ghost" onPress={() => router.push('/register')} /></Card>
       ) : !dash ? (
@@ -62,7 +58,7 @@ export default function ClaimsTab() {
       ) : (
         <>
           <Button title={t('dash.newclaim')} icon="add-circle" onPress={() => router.push('/claim-new')} />
-          <Txt v="h3" style={{ marginTop: 24, marginBottom: 12 }}>{t('cl.track')}</Txt>
+          <Txt v="h3" style={{ marginTop: 18, marginBottom: 10 }}>{t('cl.track')}</Txt>
           {claims === null ? <Skeleton h={110} r={20} /> : claims.length === 0 ? <EmptyState icon="document-text" title={t('cl.none')} /> : claims.map((cl) => <ClaimCard key={cl.id} claim={cl} />)}
         </>
       )}

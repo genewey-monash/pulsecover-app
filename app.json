@@ -33,7 +33,16 @@
     },
     "web": {
       "output": "single",
-      "favicon": "./assets/images/favicon.png"
+      "bundler": "metro",
+      "favicon": "./assets/images/favicon.png",
+      "name": "PulseCover",
+      "shortName": "PulseCover",
+      "description": "Wearable-powered life and health insurance",
+      "themeColor": "#B71234",
+      "backgroundColor": "#FFFFFF",
+      "display": "standalone",
+      "orientation": "portrait",
+      "lang": "en"
     },
     "plugins": [
       "expo-router",
@@ -79,7 +88,8 @@
     ],
     "experiments": {
       "typedRoutes": false,
-      "reactCompiler": false
+      "reactCompiler": false,
+      "baseUrl": "/m"
     },
     "extra": {
       "apiUrl": "https://pulsecover-website.onrender.com"

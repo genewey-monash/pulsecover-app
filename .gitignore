@@ -9,3 +9,4 @@ private/
 *.jks
 *.keystore
 .DS_Store
+dist-web/

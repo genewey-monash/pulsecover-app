@@ -1,7 +1,11 @@
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 import { kv, secret } from './storage';
 
-const DEFAULT_URL: string = (process.env.EXPO_PUBLIC_API_URL as string | undefined)
+// On the web the app is served by the same server as the API, so it talks to its own origin.
+const WEB_ORIGIN: string | undefined = Platform.OS === 'web' && typeof window !== 'undefined' ? window.location.origin : undefined;
+const DEFAULT_URL: string = WEB_ORIGIN
+  || (process.env.EXPO_PUBLIC_API_URL as string | undefined)
   || ((Constants.expoConfig?.extra as { apiUrl?: string } | undefined)?.apiUrl)
   || 'https://pulsecover-website.onrender.com';
 

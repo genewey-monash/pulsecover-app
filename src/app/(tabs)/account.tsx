@@ -23,8 +23,8 @@ export default function AccountTab() {
   const curLang = LANGS.find((l) => l.code === lang)?.label ?? '';
 
   return (
-    <Screen bottomPad={130}>
-      <Row style={{ justifyContent: 'space-between', paddingTop: 10, paddingBottom: 14 }}><Txt v="h1" fit>{t('acc.h1')}</Txt></Row>
+    <Screen bottomPad={32}>
+      <View style={{ paddingTop: 14, paddingBottom: 14 }}><Txt v="h2" fit>{t('acc.h1')}</Txt></View>
 
       {user ? (
         <Card tone="red" onPress={go('/profile')}>
@@ -74,23 +74,15 @@ export default function AccountTab() {
 
       <SectionTitle>{t('footer.support')}</SectionTitle>
       <Group>
-        <ListRow icon="call" title={t('cb.h')} onPress={go('/callback')} />
-        <ListRow icon="mail" title={t('ct.h1')} onPress={go('/contact')} />
         <ListRow icon="help-circle" title={t('nav.faq')} onPress={go('/faq')} />
-        <ListRow icon="briefcase" title={t('sme.h1')} onPress={go('/business')} />
-        <ListRow icon="calculator" title={t('nav.calc')} onPress={go('/calculator')} />
-        <ListRow icon="git-compare" title={t('nav.compare')} onPress={go('/compare')} />
-        <ListRow icon="school" title={t('nav.how')} onPress={go('/how')} />
-        <ListRow icon="lock-closed" title={t('footer.privacy')} onPress={go('/privacy')} />
-        <ListRow icon="stats-chart" title={t('nav.investors')} onPress={go('/investors')} />
+        <ListRow icon="call" title={t('cb.h')} onPress={go('/callback')} />
         <ListRow icon="chatbubble-ellipses" title={t('fb.h')} onPress={() => setFb(true)} last />
       </Group>
 
       {user ? <><Gap h={22} /><Button title={t('nav.logout')} variant="danger" icon="log-out" onPress={() => setOut(true)} /></> : null}
-      <Gap h={22} />
+      <Gap h={18} />
       <Txt v="caption" color={c.mute} align="center">PulseCover {Application.nativeApplicationVersion ?? '1.0.0'} ({Application.nativeBuildVersion ?? '1'})</Txt>
       <Txt v="caption" color={c.mute} align="center" style={{ marginTop: 4 }}>{t('footer.group')}</Txt>
-      <Txt v="caption" color={c.mute} align="center" style={{ marginTop: 10 }}>{t('footer.partner')}</Txt>
 
       <LanguageSheet visible={langOpen} onClose={() => setLangOpen(false)} />
       <FeedbackSheet visible={fb} onClose={() => setFb(false)} page="app/account" />

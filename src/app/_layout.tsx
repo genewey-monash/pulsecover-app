@@ -15,6 +15,7 @@ import { AuthProvider, useAuth } from '../lib/auth';
 import { DataProvider } from '../lib/data';
 import { setLangGetter } from '../lib/api';
 import { BiometricLock, IdleGuard, OfflineBanner, ToastProvider, touchActivity } from '../lib/overlays';
+import { DrawerProvider } from '../lib/drawer';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -36,6 +37,7 @@ function Shell() {
     <NavThemeProvider value={nav}>
       <View style={{ flex: 1, backgroundColor: c.bg }} onStartShouldSetResponderCapture={() => { touchActivity(); return false; }}>
         <StatusBar style={isDark ? 'light' : 'dark'} />
+        <DrawerProvider>
         <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right', contentStyle: { backgroundColor: c.bg } }}>
           <Stack.Screen name="index" options={{ animation: 'none' }} />
           <Stack.Screen name="(tabs)" options={{ animation: 'fade' }} />
@@ -45,6 +47,7 @@ function Shell() {
         <OfflineBanner />
         <IdleGuard />
         <BiometricLock />
+        </DrawerProvider>
       </View>
     </NavThemeProvider>
   );

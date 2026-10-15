@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Image } from 'expo-image';
 import { Pressable, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Chip, Icon, Row, Sheet, Txt, tap } from './ui';
+import { Chip, Icon, Row, Sheet, TopInsetCtx, Txt, tap } from './ui';
 import { LANGS, useI18n } from '../lib/i18n';
 import { radius, useTheme } from '../lib/theme';
 
@@ -57,8 +57,10 @@ export function LanguageSheet({ visible, onClose }: { visible: boolean; onClose:
 }
 
 export const LANG_CODE: Record<string, string> = { en: 'EN', zh: 'CN', ms: 'MY', ta: 'TM' };
-export function LangButton() {
+export function LangButton({ force }: { force?: boolean } = {}) {
   const { lang } = useI18n(); const { c } = useTheme(); const [open, setOpen] = useState(false);
+  const underBar = !React.useContext(TopInsetCtx);
+  if (underBar && !force) return null; // the app bar already has the language button
   return (
     <>
       <Pressable testID="lang-btn" onPress={() => { tap(); setOpen(true); }} accessibilityRole="button" accessibilityLabel="Language" hitSlop={6}

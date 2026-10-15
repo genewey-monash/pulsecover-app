@@ -68,8 +68,11 @@ interface ScreenProps {
   children: React.ReactNode; scroll?: boolean; refreshing?: boolean; onRefresh?: () => void; padded?: boolean;
   contentStyle?: StyleProp<ViewStyle>; bottomPad?: number; keyboard?: boolean; bg?: string; noTop?: boolean;
 }
-export function Screen({ children, scroll = true, refreshing, onRefresh, padded = true, contentStyle, bottomPad = 24, keyboard, bg, noTop }: ScreenProps) {
+/** False inside screens that sit under the app bar (the bar already covers the status-bar area). */
+export const TopInsetCtx = React.createContext(true);
+export function Screen({ children, scroll = true, refreshing, onRefresh, padded = true, contentStyle, bottomPad = 24, keyboard, bg, noTop: noTopProp }: ScreenProps) {
   const { c } = useTheme(); const ins = useSafeAreaInsets(); const { maxW } = useLayout();
+  const topInset = React.useContext(TopInsetCtx); const noTop = noTopProp || !topInset;
   const inner = (
     <View style={[{ width: '100%', maxWidth: maxW, alignSelf: 'center', paddingHorizontal: padded ? 18 : 0 }, contentStyle]}>
       {React.Children.toArray(children).map((ch, i) => (React.isValidElement(ch) && ch.type === Sheet ? ch : <Enter key={(ch as any)?.key ?? i} i={i}>{ch}</Enter>))}
