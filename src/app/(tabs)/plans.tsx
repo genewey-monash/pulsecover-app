@@ -26,6 +26,7 @@ export default function PlansTab() {
   const pick = (fn: () => void) => { fn(); setIdx(0); listRef.current?.scrollToOffset({ offset: 0, animated: false }); };
   return (
     <View style={{ flex: 1 }}>
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: cmp.selected.length ? 140 : 48 }}>
       <View style={{ paddingHorizontal: 18, paddingTop: 14 }}>
         <Txt v="h2" fit>{t('plans.h1')}</Txt>
         <Txt v="small" color={c.mute} style={{ marginTop: 2 }} numberOfLines={2}>{t('plans.sub')}</Txt>
@@ -35,7 +36,7 @@ export default function PlansTab() {
         </Pressable>
       </View>
       {/* one compact, swipeable filter strip instead of two stacked rows */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 18, gap: 8, alignItems: 'center' }} style={{ flexGrow: 0 }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingHorizontal: 18, paddingVertical: 4, gap: 8, alignItems: 'center' }} style={{ flexGrow: 0 }}>
         <Chip label={t('plans.all')} on={type === 'all' && buy === 'all'} onPress={() => pick(() => { setType('all'); setBuy('all'); })} />
         <Chip label={t('type.individual')} on={type === 'individual'} onPress={() => pick(() => setType(type === 'individual' ? 'all' : 'individual'))} icon="person" />
         <Chip label={t('type.family')} on={type === 'family'} onPress={() => pick(() => setType(type === 'family' ? 'all' : 'family'))} icon="people" />
@@ -46,7 +47,7 @@ export default function PlansTab() {
         <FlatList
           ref={listRef} data={list} horizontal keyExtractor={(p) => p.id} showsHorizontalScrollIndicator={false}
           snapToInterval={step} decelerationRate="fast" disableIntervalMomentum
-          contentContainerStyle={{ paddingHorizontal: 18, paddingTop: 16, paddingBottom: 8, gap: 12 }}
+          contentContainerStyle={{ paddingHorizontal: 18, paddingTop: 14, paddingBottom: 10, gap: 12, alignItems: 'flex-start' }}
           style={{ flexGrow: 0 }}
           onScroll={(e) => setIdx(Math.round(e.nativeEvent.contentOffset.x / step))} scrollEventThrottle={32}
           renderItem={({ item: p }) => {
@@ -91,7 +92,8 @@ export default function PlansTab() {
           {list.map((p, i) => <View key={p.id} style={{ width: i === Math.min(idx, list.length - 1) ? 18 : 7, height: 7, borderRadius: 4, backgroundColor: i === Math.min(idx, list.length - 1) ? c.red : c.line }} />)}
         </Row>
       ) : null}
-      <Txt v="caption" color={c.mute} align="center" style={{ marginTop: 10, paddingHorizontal: 24 }} numberOfLines={2}>{t('plans.note')}</Txt>
+      <Txt v="caption" color={c.mute} align="center" style={{ marginTop: 12, paddingHorizontal: 24 }}>{t('plans.note')}</Txt>
+      </ScrollView>
       <CompareBar />
       <Sheet visible={help} onClose={() => setHelp(false)} title={t('app.diff.h')}>
         {([['person', 'type.individual', 'app.diff.individual'], ['people', 'type.family', 'app.diff.family'], ['phone-portrait', 'buy.online', 'app.diff.online'], ['headset', 'buy.advisor', 'app.diff.advisor']] as const).map(([ic, k, d]) => (
