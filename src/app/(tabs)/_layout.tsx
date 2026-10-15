@@ -18,7 +18,7 @@ function AppBar() {
     <View style={{ paddingTop: ins.top, backgroundColor: c.bg, borderBottomWidth: 1, borderBottomColor: c.line }}>
       <View style={{ height: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 14 }}>
         <MenuButton />
-        <Pressable testID="logo-home" onPress={() => { tap(); router.navigate('/(tabs)' as never); }} accessibilityRole="button" accessibilityLabel={t('nav.home')} hitSlop={8}>
+        <Pressable testID="logo-home" onPress={() => { tap(); router.replace('/(tabs)' as never); }} accessibilityRole="button" accessibilityLabel={t('nav.home')} hitSlop={8}>
           <Logo size={32} />
         </Pressable>
         <View style={{ flexDirection: 'row', gap: 8 }}>

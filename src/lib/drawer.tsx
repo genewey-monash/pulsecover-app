@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Animated, Easing, Image, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { Animated, Easing, Image, Platform, Pressable, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -31,9 +31,10 @@ export function MenuButton() {
   );
 }
 
-interface Item { icon: IconName; key: string; to: string; tab?: boolean; sub?: string }
+interface Item { icon: IconName; key: string; to: string; tab?: boolean; home?: boolean; guestOnly?: boolean; native?: boolean }
 const MAIN: Item[] = [
-  { icon: 'person', key: 'app.tab.account', to: '/(tabs)/account', tab: true },
+  { icon: 'home', key: 'app.tab.home', to: '/(tabs)', home: true },
+  { icon: 'person', key: 'app.tab.account', to: '/(tabs)/account', tab: true, guestOnly: true },
   { icon: 'pulse', key: 'nav.connect', to: '/(tabs)/wearable', tab: true },
   { icon: 'shield-checkmark', key: 'nav.plans', to: '/(tabs)/plans', tab: true },
   { icon: 'calculator', key: 'nav.calc', to: '/calculator' },
@@ -47,7 +48,7 @@ const MORE: Item[] = [
   { icon: 'lock-closed', key: 'footer.privacy', to: '/privacy' },
   { icon: 'information-circle', key: 'app.about', to: '/how' },
   { icon: 'business', key: 'nav.sme', to: '/business' },
-  { icon: 'server', key: 'app.server.h', to: '/server' },
+  { icon: 'server', key: 'app.server.h', to: '/server', native: true },
 ];
 
 function DrawerHost() {
@@ -63,7 +64,7 @@ function DrawerHost() {
   }, [open, x]);
   const go = useCallback((it: Item) => {
     tap(); hide();
-    setTimeout(() => { if (it.tab) router.navigate(it.to as never); else router.push(it.to as never); }, 120);
+    setTimeout(() => { if (it.home) router.replace('/(tabs)' as never); else if (it.tab) router.navigate(it.to as never); else router.push(it.to as never); }, 120);
   }, [hide, router]);
   if (!mounted && !open) return null;
   const panelBg = isDark ? '#181520' : '#FFFFFF';
@@ -96,9 +97,9 @@ function DrawerHost() {
             </View>
             {!user ? <Txt w="700" color="#fff" style={{ marginTop: 14 }}>{tc(t('nav.login'))} / {tc(t('acc.register'))}</Txt> : null}
           </Pressable>
-          <View style={{ paddingTop: 6 }}>{MAIN.map((it) => <Row key={it.key} it={it} />)}</View>
+          <View style={{ paddingTop: 6 }}>{MAIN.filter((it) => !(it.guestOnly && user)).map((it) => <Row key={it.key} it={it} />)}</View>
           <View style={{ height: 1, backgroundColor: c.line, marginVertical: 8, marginHorizontal: 22 }} />
-          <View>{MORE.map((it) => <Row key={it.key} it={it} />)}</View>
+          <View>{MORE.filter((it) => !(it.native && Platform.OS === 'web')).map((it) => <Row key={it.key} it={it} />)}</View>
           {user ? (
             <>
               <View style={{ height: 1, backgroundColor: c.line, marginVertical: 8, marginHorizontal: 22 }} />

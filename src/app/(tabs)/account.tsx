@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, View } from 'react-native';
+import { Platform, Switch, View } from 'react-native';
 import * as Application from 'expo-application';
 import { useRouter } from 'expo-router';
 import { Avatar, Badge, Button, Card, Chip, Gap, Group, Icon, ListRow, Row, Screen, SectionTitle, Sheet, Tile, Txt } from '../../components/ui';
@@ -69,7 +69,7 @@ export default function AccountTab() {
           <Row wrap gap={8} style={{ marginTop: 12 }}>{themes.map(([k, label]) => <Chip key={k} label={label} on={pref === k} onPress={() => setPref(k)} />)}</Row>
         </View>
         {user && bioOk ? <ListRow icon="finger-print" title={t('app.bio.h')} subtitle={t('app.bio.sub')} right={<Switch value={bio} onValueChange={toggleBio} trackColor={{ true: c.red, false: c.line }} thumbColor="#fff" />} /> : null}
-        <ListRow icon="server" title={t('app.server.h')} onPress={go('/server')} last />
+        {Platform.OS === 'web' ? null : <ListRow icon="server" title={t('app.server.h')} onPress={go('/server')} last />}
       </Group>
 
       <SectionTitle>{t('footer.support')}</SectionTitle>
