@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Pressable, View, useWindowDimensions } from 'react-native';
+import { Animated, Easing, Pressable, ScrollView, View, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Button, Card, ErrorBox, Gap, Icon, Row, Screen, Sheet, Txt, success, tap, useTC } from '../../components/ui';
@@ -11,6 +11,52 @@ import { useI18n } from '../../lib/i18n';
 import { useTheme } from '../../lib/theme';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
+
+
+type Slide = { icon: IconName; h: string; s: string; to: string; tab?: boolean; bg: string };
+
+/** Rotating "ad" strip: changes by itself every few seconds, swipeable, each slide opens its page. */
+function PromoStrip({ slides, width }: { slides: Slide[]; width: number }) {
+  const router = useRouter();
+  const ref = useRef<ScrollView>(null);
+  const cur = useRef(0); const hold = useRef(0);
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => {
+      if (Date.now() < hold.current || slides.length < 2) return;
+      const n = (cur.current + 1) % slides.length;
+      cur.current = n; setI(n); ref.current?.scrollTo({ x: n * width, animated: true });
+    }, 3200);
+    return () => clearInterval(id);
+  }, [slides.length, width]);
+  const settle = (x: number) => { const n = Math.max(0, Math.min(slides.length - 1, Math.round(x / width))); cur.current = n; setI(n); };
+  return (
+    <View>
+      <ScrollView ref={ref} horizontal pagingEnabled showsHorizontalScrollIndicator={false} style={{ borderRadius: 20 }}
+        onScrollBeginDrag={() => { hold.current = Date.now() + 8000; }}
+        onMomentumScrollEnd={(e) => settle(e.nativeEvent.contentOffset.x)}>
+        {slides.map((sl) => (
+          <Pressable key={sl.h} style={{ width }} accessibilityRole="button" accessibilityLabel={sl.h}
+            onPress={() => { tap(); if (sl.tab) router.navigate(sl.to as never); else router.push(sl.to as never); }}>
+            <View style={{ backgroundColor: sl.bg, borderRadius: 20, paddingVertical: 14, paddingHorizontal: 16, flexDirection: 'row', alignItems: 'center', gap: 14, minHeight: 84 }}>
+              <View style={{ width: 46, height: 46, borderRadius: 15, backgroundColor: 'rgba(255,255,255,0.18)', alignItems: 'center', justifyContent: 'center' }}>
+                <Ionicons name={sl.icon} size={24} color="#fff" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Txt v="h3" color="#fff" numberOfLines={2}>{sl.h}</Txt>
+                <Txt v="small" color="rgba(255,255,255,0.88)" numberOfLines={2}>{sl.s}</Txt>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#fff" />
+            </View>
+          </Pressable>
+        ))}
+      </ScrollView>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 10 }}>
+        {slides.map((sl, k) => <View key={sl.h} style={{ width: k === i ? 18 : 6, height: 6, borderRadius: 3, backgroundColor: k === i ? '#B71234' : 'rgba(120,115,135,0.35)' }} />)}
+      </View>
+    </View>
+  );
+}
 
 /** Home = one status, one big action, a few shortcuts. Everything else is one tap away in the menu. */
 export default function Home() {
@@ -67,6 +113,16 @@ export default function Home() {
     { icon: 'gift', key: 'app.refer', to: '/referral' },
   ];
   const tileW = (Math.min(width, 760) - 18 * 2 - 10 * 2) / 3;
+  const slides: Slide[] = [
+    on && dash
+      ? { icon: 'trending-down', h: `${rm(dash.projected.annualPremium, 0)}`, s: `${t('app.premium.est')}${provider ? ' · ' + (PROVIDERS[provider] ?? provider) : ''}`, to: '/(tabs)/wearable', tab: true, bg: '#1F8A4C' }
+      : { icon: 'pricetag', h: t('app.from'), s: t('app.from.cap'), to: '/(tabs)/plans', tab: true, bg: '#B71234' },
+    { icon: 'calculator', h: t('app.promo.quote.h'), s: t('app.promo.quote.s'), to: '/calculator', bg: '#3A3550' },
+    { icon: 'gift', h: t('app.promo.refer.h'), s: t('app.promo.refer.s'), to: '/referral', bg: '#B97F00' },
+    { icon: 'document-text', h: t('app.promo.claim.h'), s: t('app.promo.claim.s'), to: '/(tabs)/claims', tab: true, bg: '#0F6C8F' },
+    { icon: 'headset', h: t('app.promo.talk.h'), s: t('app.promo.talk.s'), to: '/callback', bg: '#7A2E8E' },
+    { icon: 'business', h: t('app.promo.biz.h'), s: t('app.promo.biz.s'), to: '/business', bg: '#26242F' },
+  ];
 
   return (
     <Screen refreshing={loading} onRefresh={user ? refresh : undefined} bottomPad={24}>
@@ -102,22 +158,10 @@ export default function Home() {
         </Pressable>
       </View>
 
-      {/* device / premium row (like "selected server") */}
-      <Pressable onPress={() => router.navigate((on ? '/(tabs)/wearable' : '/(tabs)/plans') as never)} style={{ marginTop: 16 }}>
-        <Card pad={0} style={{ overflow: 'hidden' }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <View style={{ width: 5, alignSelf: 'stretch', backgroundColor: accent }} />
-            <View style={{ flex: 1, paddingVertical: 10, paddingHorizontal: 14 }}>
-              <Txt v="caption" color={c.mute} numberOfLines={1}>{on ? t('app.premium.est') : user ? t('app.device') : t('app.from.cap')}</Txt>
-              <Txt v="h3" numberOfLines={1}>
-                {on && dash ? `${rm(dash.projected.annualPremium, 0)}` : user ? t('app.off.title') : t('app.from')}
-              </Txt>
-              {on && provider ? <Txt v="caption" color={c.mute} numberOfLines={1}>{PROVIDERS[provider] ?? provider}</Txt> : null}
-            </View>
-            <Icon name="chevron-forward" size={20} color={c.mute} style={{ marginRight: 14 }} />
-          </View>
-        </Card>
-      </Pressable>
+      {/* rotating promo strip */}
+      <View style={{ marginTop: 16 }}>
+        <PromoStrip width={Math.min(width, 760) - 36} slides={slides} />
+      </View>
 
       {/* shortcuts */}
       <Row gap={10} wrap style={{ marginTop: 14 }}>
