@@ -35,7 +35,7 @@ export default function Welcome() {
           </View>
         )} getItemLayout={(_, i) => ({ length: width, offset: width * i, index: i })} />
       <View pointerEvents="box-none" style={{ position: 'absolute', top: 0, left: 0, right: 0, paddingTop: ins.top + 10, paddingHorizontal: 18 }}>
-        <Row style={{ justifyContent: 'space-between' }}><View style={{ backgroundColor: 'rgba(255,255,255,0.92)', padding: 6, borderRadius: 16 }}><Logo size={34} /></View><LangButton /></Row>
+        <Row style={{ justifyContent: 'space-between' }}><View style={{ backgroundColor: 'rgba(255,255,255,0.94)', paddingVertical: 6, paddingLeft: 6, paddingRight: 14, borderRadius: 16 }}><Logo size={34} color="#26242F" /></View><LangButton /></Row>
       </View>
       <View pointerEvents="box-none" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, paddingHorizontal: 22, paddingBottom: ins.bottom + 22, alignItems: 'center' }}>
         <View style={{ width: '100%', maxWidth: 520 }}>

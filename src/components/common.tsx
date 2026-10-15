@@ -20,11 +20,11 @@ export const IMG = {
   logo: require('../../assets/img/logo-mark.png'),
 };
 
-export function Logo({ size = 40, text = true }: { size?: number; text?: boolean }) {
+export function Logo({ size = 40, text = true, color }: { size?: number; text?: boolean; color?: string }) {
   return (
     <Row gap={10}>
       <Image source={IMG.logo} style={{ width: size, height: size, borderRadius: size * 0.22 }} contentFit="contain" />
-      {text ? <Txt v="h2" w="800">PulseCover</Txt> : null}
+      {text ? <Txt v="h2" w="800" color={color}>PulseCover</Txt> : null}
     </Row>
   );
 }
