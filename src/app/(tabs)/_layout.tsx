@@ -1,10 +1,10 @@
 import React from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Tabs } from 'expo-router/js-tabs';
 import { IconButton, LangButton, Logo } from '../../components/common';
-import { TopInsetCtx } from '../../components/ui';
+import { TopInsetCtx, tap } from '../../components/ui';
 import { MenuButton } from '../../lib/drawer';
 import { useI18n } from '../../lib/i18n';
 import { useTheme } from '../../lib/theme';
@@ -18,7 +18,9 @@ function AppBar() {
     <View style={{ paddingTop: ins.top, backgroundColor: c.bg, borderBottomWidth: 1, borderBottomColor: c.line }}>
       <View style={{ height: 58, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 14 }}>
         <MenuButton />
-        <Logo size={32} />
+        <Pressable testID="logo-home" onPress={() => { tap(); router.navigate('/(tabs)' as never); }} accessibilityRole="button" accessibilityLabel={t('nav.home')} hitSlop={8}>
+          <Logo size={32} />
+        </Pressable>
         <View style={{ flexDirection: 'row', gap: 8 }}>
           <LangButton force />
           <IconButton name="search" label={t('search.g.page')} onPress={() => router.push('/search' as never)} />
