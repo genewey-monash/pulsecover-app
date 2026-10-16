@@ -36,7 +36,7 @@ export default function Contact() {
       <Field label={t('field.name')} value={f.name} onChangeText={set('name')} error={e.name} left="person-outline" maxLength={100} />
       <Field label={t('field.email')} value={f.email} onChangeText={set('email')} error={e.email} autoCapitalize="none" keyboardType="email-address" left="mail-outline" />
       <Txt v="label" style={{ marginTop: 18, marginBottom: 8 }}>{t('ct.topic')}</Txt>
-      <Row wrap gap={8}>{TOPICS.map((k, i) => <Chip key={k} label={t(`ct.t${i + 1}`)} on={f.topic === k} onPress={() => set('topic')(k)} />)}</Row>
+      <Row wrap gap={10}>{TOPICS.map((k, i) => <Chip key={k} label={t(`ct.t${i + 1}`)} on={f.topic === k} onPress={() => set('topic')(k)} />)}</Row>
       <Field label={t('field.message')} value={f.message} onChangeText={set('message')} error={e.message} multiline maxLength={2000} />
       <Txt v="caption" color={c.mute} style={{ marginTop: 8 }}>{t('ct.ack')}</Txt>
       <ErrorBox text={top} />

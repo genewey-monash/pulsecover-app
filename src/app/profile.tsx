@@ -40,7 +40,7 @@ export default function Profile() {
       <DateField label={t('field.dob')} value={f.dob} onChange={set('dob')} error={e.dob} max={adultCutoff()} />
       <Field label={t('pf.address')} value={f.address} onChangeText={set('address')} left="location-outline" maxLength={200} />
       <Txt v="label" style={{ marginTop: 16, marginBottom: 8 }}>{t('pf.lang')}</Txt>
-      <Row wrap gap={8}>{LANGS.map((l) => <Chip key={l.code} label={l.label} on={f.lang === l.code} onPress={() => { setF((p) => ({ ...p, lang: l.code })); setOk(false); }} />)}</Row>
+      <Row wrap gap={10}>{LANGS.map((l) => <Chip key={l.code} label={l.label} on={f.lang === l.code} onPress={() => { setF((p) => ({ ...p, lang: l.code })); setOk(false); }} />)}</Row>
       <ErrorBox text={top} />
       {ok ? <Notice text={t('pf.saved')} /> : null}
       <Gap h={22} />

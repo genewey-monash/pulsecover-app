@@ -38,12 +38,12 @@ export default function Callback() {
       <Field label={t('cb.phone')} value={f.phone} onChangeText={set('phone')} error={e.phone} keyboardType="phone-pad" placeholder="+60" left="call-outline" maxLength={25} />
       <Field label={t('field.email')} value={f.email} onChangeText={set('email')} error={e.email} autoCapitalize="none" keyboardType="email-address" left="mail-outline" help={t('cb.email.note')} />
       <Field label={t('cb.state')} onPress={() => setPick(true)} valueText={f.state} placeholder={t('cb.select')} error={e.state} left="location-outline" />
-      <Txt v="label" style={{ marginTop: 18, marginBottom: 8 }}>{t('cb.need')}</Txt>
-      <Row wrap gap={8}>{NEEDS.map((k) => <Chip key={k} label={t(NEED_KEY[k])} on={f.need === k} onPress={() => set('need')(k)} />)}</Row>
-      <Txt v="label" style={{ marginTop: 18, marginBottom: 8 }}>{t('cb.time')}</Txt>
-      <Row wrap gap={8}>{TIMES.map((k) => <Chip key={k} label={t(TIME_KEY[k])} on={f.time === k} onPress={() => set('time')(k)} />)}</Row>
-      <Txt v="label" style={{ marginTop: 18, marginBottom: 8 }}>{t('cb.lang')}</Txt>
-      <Row wrap gap={8}>{LANGS.map((l) => <Chip key={l.code} label={l.label} on={f.clang === l.code} onPress={() => set('clang')(l.code)} />)}</Row>
+      <Txt v="label" style={{ marginTop: 24, marginBottom: 10 }}>{t('cb.need')}</Txt>
+      <Row wrap gap={12}>{NEEDS.map((k) => <Chip key={k} label={t(NEED_KEY[k])} on={f.need === k} onPress={() => set('need')(k)} />)}</Row>
+      <Txt v="label" style={{ marginTop: 24, marginBottom: 10 }}>{t('cb.time')}</Txt>
+      <Row wrap gap={12}>{TIMES.map((k) => <Chip key={k} label={t(TIME_KEY[k])} on={f.time === k} onPress={() => set('time')(k)} />)}</Row>
+      <Txt v="label" style={{ marginTop: 24, marginBottom: 10 }}>{t('cb.lang')}</Txt>
+      <Row wrap gap={12}>{LANGS.map((l) => <Chip key={l.code} label={l.label} on={f.clang === l.code} onPress={() => set('clang')(l.code)} />)}</Row>
       <Pressable onPress={() => { tap(); set('consent')(!f.consent); }} accessibilityRole="checkbox" accessibilityState={{ checked: f.consent }} style={{ flexDirection: 'row', gap: 12, marginTop: 20 }}>
         <View style={{ width: 26, height: 26, borderRadius: 8, borderWidth: 2, borderColor: e.consent ? c.bad : f.consent ? c.red : c.line, backgroundColor: f.consent ? c.red : 'transparent', alignItems: 'center', justifyContent: 'center' }}>{f.consent ? <Icon name="checkmark" size={18} color="#fff" /> : null}</View>
         <Txt style={{ flex: 1 }}>{t('cb.consent')}</Txt>
@@ -53,7 +53,7 @@ export default function Callback() {
       <Gap h={20} />
       <Button title={t('cb.submit')} icon="call" loading={busy} onPress={submit} />
       <Sheet visible={pick} onClose={() => setPick(false)} title={t('cb.state')}>
-        <Row wrap gap={8}>{STATES.map((s) => <Chip key={s} label={s} on={f.state === s} onPress={() => { set('state')(s); setPick(false); }} />)}</Row>
+        <Row wrap gap={10}>{STATES.map((s) => <Chip key={s} label={s} on={f.state === s} onPress={() => { set('state')(s); setPick(false); }} />)}</Row>
         <Gap h={10} />
       </Sheet>
     </Screen>

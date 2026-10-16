@@ -41,7 +41,7 @@ export default function ClaimNew() {
     <Screen keyboard>
       <ScreenHeader title={t('dash.newclaim')} subtitle={t('cl.sub')} />
       <Txt v="label" style={{ marginBottom: 8 }}>{t('cl.type')}</Txt>
-      <Row wrap gap={8}>{TYPES.map((k) => <Chip key={k} label={t(`cl.t.${k}`)} on={type === k} onPress={() => setType(k)} />)}</Row>
+      <Row wrap gap={10}>{TYPES.map((k) => <Chip key={k} label={t(`cl.t.${k}`)} on={type === k} onPress={() => setType(k)} />)}</Row>
       <Field label={t('cl.amount')} value={amount} onChangeText={(v) => { setAmount(v.replace(/[^0-9.]/g, '')); setE((p) => ({ ...p, amount: null })); }} error={e.amount} keyboardType="decimal-pad" left="cash-outline" help={cover ? `${t('dash.cover')}: ${rm(cover, 0)}` : undefined} />
       <DateField label={t('cl.date')} value={date} onChange={(v) => { setDate(v); setE((p) => ({ ...p, date: null })); }} error={e.date} max={new Date()} initial={new Date()} />
       <Field label={t('cl.desc')} value={desc} onChangeText={(v) => { setDesc(v); setE((p) => ({ ...p, desc: null })); }} error={e.desc} multiline maxLength={2000} />

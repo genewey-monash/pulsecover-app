@@ -64,7 +64,7 @@ export default function Search() {
       {!q.trim() ? (
         <>
           <Txt v="label" color={c.mute} style={{ marginBottom: 10 }}>{t('search.popular')}</Txt>
-          <Row wrap gap={8}>{popular.map(([k, h]) => <Chip key={k} label={t(k)} onPress={() => router.push(h as any)} />)}</Row>
+          <Row wrap gap={10}>{popular.map(([k, h]) => <Chip key={k} label={t(k)} onPress={() => router.push(h as any)} />)}</Row>
         </>
       ) : res.length === 0 ? <EmptyState icon="search" title={t('search.none')} /> : res.map((it, i) => (
         <View key={i}>
