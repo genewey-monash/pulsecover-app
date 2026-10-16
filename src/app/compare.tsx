@@ -31,7 +31,13 @@ export default function Compare() {
           {rows.map(([k, f], i) => (
             <Row key={k} gap={0} align="stretch" style={{ borderTopWidth: 1, borderTopColor: c.line, backgroundColor: i % 2 ? c.bgAlt : c.surface }}>
               <View style={{ width: labelW, padding: 12 }}><Txt v="small" w="700" color={c.mute}>{t(k)}</Txt></View>
-              {plans.map((p) => <View key={p.id} style={{ width: colW, padding: 12 }}><Txt v="small" w={i < 4 ? '700' : '400'}>{f(p)}</Txt></View>)}
+              {plans.map((p) => (
+                <View key={p.id} style={{ width: colW, padding: 12 }}>
+                  {k === 'cmpt.cov'
+                    ? covs(p.id).map((kk) => <Txt key={kk} v="small" style={{ marginBottom: 10 }}>• {t(`cov.${kk}`)}</Txt>)
+                    : <Txt v="small" w={i < 4 ? '700' : '400'}>{f(p)}</Txt>}
+                </View>
+              ))}
             </Row>
           ))}
           {/* each plan's own buttons sit under its column */}
