@@ -25,7 +25,7 @@ function PromoStrip({ slides, width }: { slides: Slide[]; width: number }) {
     const id = setInterval(() => {
       if (Date.now() < hold.current || slides.length < 2) return;
       const n = (cur.current + 1) % slides.length;
-      cur.current = n; setI(n); ref.current?.scrollTo({ x: n * width, animated: true });
+      cur.current = n; setI(n); ref.current?.scrollTo({ x: n * width, animated: n !== 0 }); // wrapping back to the first slide jumps instead of scrolling past every slide
     }, 3200);
     return () => clearInterval(id);
   }, [slides.length, width]);
