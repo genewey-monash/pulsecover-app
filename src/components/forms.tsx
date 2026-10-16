@@ -37,7 +37,7 @@ function WebDate({ value, onChange, max, min, lang }: { value: Date; onChange: (
     onChange(n);
   };
   const months = Array.from({ length: 12 }, (_, i) => new Date(2000, i, 1).toLocaleDateString(LOCALE[lang] ?? 'en-GB', { month: 'long' }));
-  const style: any = { flex: 1, minWidth: 0, fontSize: 17, padding: '13px 10px', borderRadius: 12, border: `1px solid ${c.line}`, background: c.input, color: c.ink, appearance: 'auto', fontFamily: 'inherit' };
+  const style: any = { flex: 1, minWidth: 0, fontSize: 17, padding: '13px 10px', borderRadius: 12, border: `1px solid ${c.line}`, background: c.input, color: c.ink, appearance: 'auto', fontFamily: "PublicSans_600SemiBold, -apple-system, system-ui, sans-serif" };
   const sel = (val: number, onSel: (n: number) => void, opts: { v: number; l: string }[], label: string, flex: number) =>
     React.createElement('select', { 'aria-label': label, value: val, style: { ...style, flex }, onChange: (e: any) => onSel(Number(e.target.value)) },
       opts.map((o) => React.createElement('option', { key: o.v, value: o.v }, o.l)));

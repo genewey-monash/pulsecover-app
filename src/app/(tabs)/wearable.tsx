@@ -71,7 +71,7 @@ export default function WearableTab() {
                 <Row gap={12}>
                   <Tile icon={ICON[id]} tone={on ? 'ok' : 'red'} />
                   <View style={{ flex: 1 }}>
-                    <Txt w="700" numberOfLines={1}>{name}</Txt>
+                    <Txt w="700" numberOfLines={2}>{name}</Txt>
                     <Txt v="caption" color={on ? c.ok : c.mute} w={on ? '700' : '500'}>{on ? t('connect.connected') : t('app.notconnected')}</Txt>
                   </View>
                   {on ? <Button title={t('connect.disc')} variant="danger" small full={false} onPress={() => setDiscon(id)} /> : <Button title={t('connect.cta')} small full={false} onPress={() => startConnect(id)} />}
