@@ -33,14 +33,8 @@ export default function Referral() {
       </Card>
       <SectionTitle>{t('ref.h')}</SectionTitle>
       {[1, 2, 3].map((i) => <Row key={i} gap={12} style={{ marginBottom: 12 }}><NumDot n={i} /><Txt style={{ flex: 1 }}>{t(`ref.s${i}`)}</Txt></Row>)}
-      <SectionTitle>{t('dash.board')}</SectionTitle>
-      <Card pad={0}>
-        {(dash?.ranking?.length ? dash.ranking : []).map((r, i) => (
-          <Row key={i} style={{ justifyContent: 'space-between', padding: 14, borderTopWidth: i ? 1 : 0, borderTopColor: c.line }}><Txt w="600">{i + 1}. {r.name}</Txt><Txt w="800" color={c.accent}>{r.count}</Txt></Row>
-        ))}
-        {!dash?.ranking?.length ? <Txt color={c.mute} align="center" style={{ padding: 18 }}>–</Txt> : null}
-      </Card>
-      <Txt v="caption" color={c.mute} style={{ marginTop: 10 }}>{t('dash.milestone')}</Txt>
+      <SectionTitle>{t('dash.reftrack')}</SectionTitle>
+      <Card pad={16}><Row style={{ justifyContent: 'space-between' }}><Txt w="700">{t('dash.ref.count')}</Txt><Txt v="h1" color={c.accent}>{dash?.referrals ?? 0}</Txt></Row></Card>
     </Screen>
   );
 }

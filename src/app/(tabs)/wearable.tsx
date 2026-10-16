@@ -13,6 +13,8 @@ import { useTheme } from '../../lib/theme';
 import type { Quote } from '../../lib/pricing';
 
 const ICON: Record<string, React.ComponentProps<typeof Icon>['name']> = { applehealth: 'logo-apple', healthconnect: 'logo-google', fitbit: 'watch', garmin: 'navigate-circle', whoop: 'fitness' };
+// Apple Health and Google Health Connect are the two links; Fitbit, Garmin and Whoop data flow in through them
+const CONNECTABLE = ['applehealth', 'healthconnect'];
 const REASONS = ['illness', 'injury', 'travel', 'pregnancy', 'other'] as const;
 
 export default function WearableTab() {
@@ -64,7 +66,7 @@ export default function WearableTab() {
 
       {seg === 'devices' ? (
         <>
-          {Object.entries(PROVIDERS).map(([id, name]) => {
+          {Object.entries(PROVIDERS).filter(([id]) => CONNECTABLE.includes(id) || conn.has(id)).map(([id, name]) => {
             const on = conn.has(id);
             return (
               <Card key={id} style={{ marginBottom: 10 }} pad={12}>
