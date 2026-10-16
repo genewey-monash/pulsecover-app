@@ -96,7 +96,7 @@ export function Screen({ children, scroll = true, refreshing, onRefresh, padded 
 }
 
 /** Pages opened from the left menu: they show the menu button, not a back arrow. */
-const TOP_LEVEL = ['/calculator', '/compare', '/referral', '/faq', '/contact', '/how', '/investors', '/privacy', '/business', '/callback', '/apply', '/search'];
+const TOP_LEVEL = ['/calculator', '/compare', '/referral', '/faq', '/contact', '/how', '/investors', '/privacy', '/business', '/callback', '/apply', '/search', '/rewards', '/campaigns'];
 export function ScreenHeader({ title, subtitle, right, onBack, back = true }: { title: string; subtitle?: string; right?: React.ReactNode; onBack?: () => void; back?: boolean }) {
   const { c } = useTheme(); const { show } = useDrawer(); const path = usePathname(); const router = useRouter();
   // Pages reached from the menu get the menu button; detail pages opened from inside a page get a back arrow.

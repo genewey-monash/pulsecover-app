@@ -40,10 +40,12 @@ const MAIN: Item[] = [
   { icon: 'calculator', key: 'nav.calc', to: '/calculator' },
   { icon: 'git-compare', key: 'nav.compare', to: '/compare' },
   { icon: 'document-text', key: 'nav.claims', to: '/(tabs)/claims', tab: true },
+  { icon: 'flame', key: 'nav.rewards', to: '/rewards' },
+  { icon: 'megaphone', key: 'nav.campaigns', to: '/campaigns' },
   { icon: 'gift', key: 'app.refer', to: '/referral' },
 ];
 const MORE: Item[] = [
-  { icon: 'chatbubble-ellipses', key: 'app.help', to: '/faq' },
+  { icon: 'help-circle', key: 'nav.faq', to: '/faq' },
   { icon: 'call', key: 'nav.talk', to: '/callback' },
   { icon: 'lock-closed', key: 'footer.privacy', to: '/privacy' },
   { icon: 'information-circle', key: 'app.about', to: '/how' },

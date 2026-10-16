@@ -12,7 +12,7 @@ const PLANS = {
   D: { id: 'D', base: 2400, cover: 1000000, type: 'family', isNew: true }
 };
 const planOf = (id) => PLANS[id] || PLANS.A;
-const APP_SUB_MONTHLY = 5;
+const APP_SUB_MONTHLY = 14.9; // paid Premium Quote tier, illustrative RM14.90/month (BMC workbook, sheet 6a)
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const num = (v, d) => (Number.isFinite(Number(v)) && v !== '' && v !== null ? Number(v) : d);
@@ -27,7 +27,7 @@ function components(m) {
   const heart = clamp(((90 - hr) / (90 - 55)) * 100, 0, 100);
   return { steps, exercise, sleep, heart };
 }
-const WEIGHTS = { steps: 0.35, exercise: 0.30, sleep: 0.20, heart: 0.15 };
+const WEIGHTS = { steps: 0.25, exercise: 0.25, sleep: 0.20, heart: 0.30 }; // resting heart rate 30%, steps 25%, exercise 25%, sleep 20%
 
 function score(m) {
   const c = components(m);

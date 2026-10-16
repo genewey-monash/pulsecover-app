@@ -120,6 +120,8 @@ export default function Home() {
       ? { icon: 'trending-down', h: `${rm(dash.projected.annualPremium, 0)}`, s: `${t('app.premium.est')}${provider ? ' · ' + (PROVIDERS[provider] ?? provider) : ''}`, to: '/(tabs)/wearable', tab: true, bg: '#1F8A4C' }
       : { icon: 'pricetag', h: t('app.from'), s: t('app.from.cap'), to: '/(tabs)/plans', tab: true, bg: '#B71234' },
     { icon: 'calculator', h: t('app.promo.quote.h'), s: t('app.promo.quote.s'), to: '/calculator', bg: '#3A3550' },
+    { icon: 'flame', h: t('rw.h1'), s: t('rw.sub'), to: '/rewards', bg: '#C2410C' },
+    { icon: 'megaphone', h: t('cm.h1'), s: t('cm.sub'), to: '/campaigns', bg: '#0F766E' },
     { icon: 'gift', h: t('app.promo.refer.h'), s: t('app.promo.refer.s'), to: '/referral', bg: '#B97F00' },
     { icon: 'document-text', h: t('app.promo.claim.h'), s: t('app.promo.claim.s'), to: '/(tabs)/claims', tab: true, bg: '#0F6C8F' },
     { icon: 'headset', h: t('app.promo.talk.h'), s: t('app.promo.talk.s'), to: '/callback', bg: '#7A2E8E' },

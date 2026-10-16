@@ -89,6 +89,10 @@ export default function PlansTab() {
         </Row>
       ) : null}
       <Txt v="caption" color={c.mute} align="center" style={{ marginTop: 12, paddingHorizontal: 24 }}>{t('plans.note')}</Txt>
+      <Card style={{ marginHorizontal: 18, marginTop: 16 }} pad={14}>
+        <Txt w="800">{t('plans.uw')}</Txt>
+        <Txt v="small" color={c.mute} style={{ marginTop: 6 }}>{t('plans.consent')}</Txt>
+      </Card>
       </ScrollView>
       <CompareBar />
       <Sheet visible={help} onClose={() => setHelp(false)} title={t('diff.h')}>
