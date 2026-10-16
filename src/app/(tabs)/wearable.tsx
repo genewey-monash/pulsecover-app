@@ -12,7 +12,7 @@ import { useToast } from '../../lib/overlays';
 import { useTheme } from '../../lib/theme';
 import type { Quote } from '../../lib/pricing';
 
-const ICON: Record<string, React.ComponentProps<typeof Icon>['name']> = { healthconnect: 'logo-google', fitbit: 'watch', garmin: 'navigate-circle', whoop: 'fitness' };
+const ICON: Record<string, React.ComponentProps<typeof Icon>['name']> = { applehealth: 'logo-apple', healthconnect: 'logo-google', fitbit: 'watch', garmin: 'navigate-circle', whoop: 'fitness' };
 const REASONS = ['illness', 'injury', 'travel', 'pregnancy', 'other'] as const;
 
 export default function WearableTab() {

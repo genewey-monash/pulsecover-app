@@ -61,5 +61,5 @@ export const useDash = () => useContext(DataCtx);
 
 export const fmt = (n: number, d = 2) => Number(n).toLocaleString('en-MY', { minimumFractionDigits: d, maximumFractionDigits: d });
 export const rm = (n: number, d = 2) => `RM\u00A0${fmt(n, d)}`; // non-breaking space keeps the amount on one line
-export const PROVIDERS: Record<string, string> = { healthconnect: 'Google Health Connect', fitbit: 'Fitbit', garmin: 'Garmin', whoop: 'Whoop' };
-export const PROVIDER_ICON: Record<string, string> = { healthconnect: 'logo-google', fitbit: 'watch', garmin: 'navigate-circle', whoop: 'fitness' };
+export const PROVIDERS: Record<string, string> = { applehealth: 'Apple Health', healthconnect: 'Google Health Connect', fitbit: 'Fitbit', garmin: 'Garmin', whoop: 'Whoop' };
+export const PROVIDER_ICON: Record<string, string> = { applehealth: 'logo-apple', healthconnect: 'logo-google', fitbit: 'watch', garmin: 'navigate-circle', whoop: 'fitness' };

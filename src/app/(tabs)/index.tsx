@@ -65,6 +65,8 @@ export default function Home() {
   const { width, height } = useWindowDimensions();
   const [ask, setAsk] = useState(false); const [busy, setBusy] = useState(false); const [err, setErr] = useState<string | null>(null);
 
+  // iPhone and iPad users connect through Apple Health, everyone else through Google Health Connect
+  const defaultProvider = typeof navigator !== 'undefined' && /iPhone|iPad|iPod/i.test(navigator.userAgent || '') ? 'applehealth' : 'healthconnect';
   const conn = dash?.connections ?? [];
   const on = conn.length > 0; // guests can connect too
   const provider = conn[0]?.provider;
@@ -95,7 +97,7 @@ export default function Home() {
   const connect = async () => {
     setBusy(true); setErr(null);
     try {
-      if (user) { await api('/connect', { provider: 'healthconnect', consent: true }); await refresh(); } else await guestConnect('healthconnect');
+      if (user) { await api('/connect', { provider: defaultProvider, consent: true }); await refresh(); } else await guestConnect(defaultProvider);
       success(); setAsk(false);
     }
     catch (e) { setErr(errorText(e, t)); }
@@ -119,6 +121,7 @@ export default function Home() {
     on && dash
       ? { icon: 'trending-down', h: `${rm(dash.projected.annualPremium, 0)}`, s: `${t('app.premium.est')}${provider ? ' · ' + (PROVIDERS[provider] ?? provider) : ''}`, to: '/(tabs)/wearable', tab: true, bg: '#1F8A4C' }
       : { icon: 'pricetag', h: t('app.from'), s: t('app.from.cap'), to: '/(tabs)/plans', tab: true, bg: '#B71234' },
+    { icon: 'star', h: t('pq.h'), s: t('pq.p'), to: '/premium', bg: '#8E0E28' },
     { icon: 'calculator', h: t('app.promo.quote.h'), s: t('app.promo.quote.s'), to: '/calculator', bg: '#3A3550' },
     { icon: 'flame', h: t('rw.h1'), s: t('rw.sub'), to: '/rewards', bg: '#C2410C' },
     { icon: 'megaphone', h: t('cm.h1'), s: t('cm.sub'), to: '/campaigns', bg: '#0F766E' },
@@ -179,6 +182,16 @@ export default function Home() {
           </Pressable>
         ))}
       </Row>
+
+      {/* dedicated Premium Quote callout, below the shortcuts */}
+      <Pressable onPress={() => { tap(); router.push('/premium'); }} accessibilityRole="button" accessibilityLabel={t('pq.h')} style={{ marginTop: 16 }}>
+        <View style={{ backgroundColor: c.red, borderRadius: 22, padding: 18 }}>
+          <Row gap={8} style={{ marginBottom: 6 }}><Ionicons name="star" size={16} color="#FFD9E0" /><Txt v="caption" w="800" color="#FFD9E0" style={{ letterSpacing: 1 }}>{t('pq.kicker').toUpperCase()}</Txt></Row>
+          <Txt v="h3" color="#fff">{t('pq.h')}</Txt>
+          <Txt v="small" color="rgba(255,255,255,0.9)" style={{ marginTop: 6 }}>{t('pq.p')}</Txt>
+          <View style={{ alignSelf: 'flex-start', marginTop: 14, backgroundColor: '#fff', borderRadius: 999, paddingVertical: 10, paddingHorizontal: 20 }}><Txt w="800" color={c.red}>{t('pq.cta')}</Txt></View>
+        </View>
+      </Pressable>
 
       <Sheet visible={ask} onClose={() => !busy && setAsk(false)} title={t('connect.modal.h')}>
         <Txt color={c.mute}>{t('connect.modal.p')}</Txt>
