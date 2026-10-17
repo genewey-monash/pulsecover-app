@@ -102,4 +102,4 @@ function financials() {
   };
 }
 
-module.exports = { GRADES, gradeOf, PLANS, planOf, BASE_PREMIUM, BAND, COMMISSION, APP_SUB_MONTHLY, score, adjustment, quote, averageMetrics, smeQuote, financials, clamp, num };
+module.exports = { WEIGHTS, GRADES, gradeOf, PLANS, planOf, BASE_PREMIUM, BAND, COMMISSION, APP_SUB_MONTHLY, score, adjustment, quote, averageMetrics, smeQuote, financials, clamp, num };

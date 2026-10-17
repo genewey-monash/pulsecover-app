@@ -41,7 +41,7 @@ export default function PremiumScreen() {
         ))}
       </Card>
       <Gap h={18} />
-      <Button title={t('pq.premium.cta')} icon="star" onPress={() => router.push('/calculator')} />
+      <Button title={t('pq.premium.cta')} icon="star" onPress={() => router.push('/premium-quote')} />
       <Gap h={10} />
       <Button title={t('pq.free.cta')} variant="ghost" onPress={() => router.navigate('/(tabs)/wearable')} />
       <Txt v="caption" color={c.mute} style={{ marginTop: 14 }}>{t('pq.note')}</Txt>

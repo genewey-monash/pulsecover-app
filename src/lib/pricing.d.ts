@@ -10,6 +10,7 @@ export interface Quote {
 export const GRADES: { g: string; min: number }[];
 export const PLANS: Record<PlanId, Plan>;
 export const BAND: number;
+export const WEIGHTS: { steps: number; exercise: number; sleep: number; heart: number };
 export const APP_SUB_MONTHLY: number;
 export function adjustment(score: number): number;
 export function score(m: Partial<Metrics>): { score: number; components: Quote['components'] };

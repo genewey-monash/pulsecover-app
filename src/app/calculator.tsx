@@ -11,6 +11,7 @@ import { useAuth } from '../lib/auth';
 import { rm } from '../lib/data';
 import { errorText } from '../lib/errors';
 import { useI18n } from '../lib/i18n';
+import { pqHandoff } from '../lib/pqLogic';
 import { quote } from '../lib/pricing';
 import { useTheme } from '../lib/theme';
 
@@ -75,6 +76,8 @@ export default function Calculator() {
       <Card tone="soft"><Txt v="h3">{t('calc.formula.h')}</Txt><Txt v="small" color={c.mute} style={{ marginTop: 4 }}>{t('calc.formula.p')}</Txt></Card>
       <Gap h={16} />
       <Button title={t('calc.cta')} icon="shield-checkmark" onPress={() => router.push({ pathname: '/apply', params: { plan, steps: String(m.steps), exerciseMin: String(m.exerciseMin), sleepHours: String(m.sleepHours), restingHr: String(m.restingHr), sub: sub ? '1' : '0' } })} />
+      <Gap h={10} />
+      <Button title={t('calc.pq')} icon="star" variant="ghost" onPress={() => { pqHandoff.value = { plan, ...m }; router.push('/premium-quote'); }} />
       <Gap h={10} />
       <ButtonRow>
         <Button title={t('eq.h')} variant="ghost" icon="mail" style={{ flex: 1 }} small onPress={() => { setOk(false); setErr(null); setOpen(true); }} />
