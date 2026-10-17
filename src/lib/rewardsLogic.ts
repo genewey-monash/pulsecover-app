@@ -6,7 +6,7 @@ export interface Rec { day: string; steps: number; exerciseMin: number; sleepHou
 export interface Tier { metric: string; param: number; need: number; unit: string; xp: number }
 export interface BadgeDef { id: string; category: string; icon: string; tiers: Tier[] }
 export interface QuestDef { id: string; period: 'day' | 'week'; metric: string; goal: number; unit: string; xp: number; minLevel?: string }
-export interface VaultDef { id: string; kind: 'coupon' | 'exclusive' | 'event'; premium?: boolean; brand: string; ic: string; k: string; loc?: string; off?: number; req: { badge?: string; tier?: number; level?: string } | null }
+export interface VaultDef { id: string; kind: 'coupon' | 'exclusive' | 'event'; premium?: boolean; icon: string; k: string; loc?: string; off?: number; req: { badge?: string; tier?: number; level?: string } | null }
 export const C = catalog as unknown as {
   activeRule: { steps: number; exerciseMin: number }; levels: { id: string; xp: number }[];
   xp: { activeDay: number; wearDay: number; referral: number; streak: Record<string, number> }; milestones: number[];

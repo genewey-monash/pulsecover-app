@@ -45,7 +45,7 @@ export default function Compare() {
             <View style={{ width: labelW }} />
             {plans.map((p) => (
               <View key={p.id} style={{ width: colW, padding: 10, gap: 8 }}>
-                <Button title={t('plan.quote')} variant="ghost" small onPress={() => router.push({ pathname: '/calculator', params: { plan: p.id } })} />
+                <Button title={t('plan.quote')} variant="ghost" small onPress={() => router.push({ pathname: '/plan-result', params: { plan: p.id } })} />
                 <Button title={t('plan.apply')} small onPress={() => router.push({ pathname: '/apply', params: { plan: p.id } })} />
               </View>
             ))}

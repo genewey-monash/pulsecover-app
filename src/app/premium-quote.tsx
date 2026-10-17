@@ -13,6 +13,7 @@ import { errorText } from '../lib/errors';
 import { useI18n } from '../lib/i18n';
 import { PLANS, type Metrics, type PlanId } from '../lib/pricing';
 import { BANDS, calc, FACTORS, KEY, pqHandoff, planGoals, SAMPLE, sampleSeries, scenarios, status, type Factor } from '../lib/pqLogic';
+import { PartnerTile, SampleTag } from '../components/partner';
 import { kv } from '../lib/storage';
 import { useToast } from '../lib/overlays';
 import { useTheme } from '../lib/theme';
@@ -22,18 +23,15 @@ const unitOf = (t: (k: string) => string, f: Factor, v: number) =>
 const STAT = { good: 'pqr.st.excellent', ok: 'pqr.st.good', low: 'pqr.st.work' } as const;
 const rm0 = (n: number) => rm(n, 0);
 
-interface Perk { id: string; min: number; brand: string; k: string; ic: string }
+interface Perk { id: string; min: number; k: string; icon: string }
 const PERKS: Perk[] = [
-  { id: 'pharm', min: 3, brand: 'Sample Pharmacy', k: 'cp.pharm', ic: 'P' }, { id: 'cafe', min: 7, brand: 'Sample Cafe', k: 'cp.cafe', ic: 'C' },
-  { id: 'super', min: 14, brand: 'Sample Market', k: 'cp.super', ic: 'M' }, { id: 'watch', min: 14, brand: 'Sample Wearables', k: 'pqr.perk.watch', ic: 'W' },
-  { id: 'gym', min: 30, brand: 'Sample Gym', k: 'cp.gym', ic: 'G' }, { id: 'gymtrial', min: 21, brand: 'Sample Fitness', k: 'pqr.perk.trial', ic: 'F' },
+  { id: 'pharm', min: 3, k: 'cp.pharm', icon: 'medkit' }, { id: 'cafe', min: 7, k: 'cp.cafe', icon: 'cafe' },
+  { id: 'super', min: 14, k: 'cp.super', icon: 'cart' }, { id: 'watch', min: 14, k: 'pqr.perk.watch', icon: 'watch' },
+  { id: 'gym', min: 30, k: 'cp.gym', icon: 'barbell' }, { id: 'gymtrial', min: 21, k: 'pqr.perk.trial', icon: 'pricetag' },
 ];
-const EVENTS = [{ id: 'run', off: 21, loc: 'pqr.ev.loc.run' }, { id: 'steps', off: 10, loc: 'pqr.ev.loc.online' }, { id: 'talk', off: 35, loc: 'pqr.ev.loc.online' }];
+const EVENTS = [{ id: 'run', off: 21, loc: 'pqr.ev.loc.run', icon: 'flag' }, { id: 'steps', off: 10, loc: 'pqr.ev.loc.online', icon: 'footsteps' }, { id: 'talk', off: 35, loc: 'pqr.ev.loc.online', icon: 'mic' }];
 
-function Tag({ label }: { label: string }) {
-  const { c } = useTheme();
-  return <View style={{ borderWidth: 1, borderColor: c.mute, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start' }}><Txt v="caption" w="800" color={c.mute}>{label}</Txt></View>;
-}
+function Tag({ label }: { label: string }) { return <SampleTag label={label} />; }
 function Cell({ k, v, good }: { k: string; v: string; good?: boolean }) {
   const { c } = useTheme();
   return <View style={{ width: '50%', paddingRight: 8 }}><Txt v="caption" color={c.mute}>{k}</Txt><Txt w="800" color={good ? c.ok : undefined}>{v}</Txt></View>;
@@ -47,6 +45,7 @@ function H({ title, sub }: { title: string; sub?: string }) {
 export default function PremiumQuoteScreen() {
   const router = useRouter(); const { t, lang } = useI18n(); const { c } = useTheme(); const { user } = useAuth(); const { dash } = useDash(); const toast = useToast();
   const [plan, setPlan] = useState<PlanId>('A'); const [cur, setCur] = useState<Metrics>(SAMPLE);
+  const [from, setFrom] = useState<string | null>(null);
   const [source, setSource] = useState<'sample' | 'calc' | 'wearable'>('sample'); const [series, setSeries] = useState<(number | null)[]>(() => sampleSeries(SAMPLE));
   const [days, setDays] = useState<30 | 90>(30); const [chartW, setChartW] = useState(300);
   const [wi, setWi] = useState<Metrics>(SAMPLE);
@@ -60,7 +59,7 @@ export default function PremiumQuoteScreen() {
     const h = pqHandoff.value;
     if (h) {
       const m: Metrics = { steps: h.steps, exerciseMin: h.exerciseMin, sleepHours: h.sleepHours, restingHr: h.restingHr };
-      setCur(m); setWi(m); setPlan((PLANS as any)[h.plan] ? (h.plan as PlanId) : 'A'); setSource('calc'); setSeries(sampleSeries(m)); return;
+      setCur(m); setWi(m); setPlan((PLANS as any)[h.plan] ? (h.plan as PlanId) : 'A'); setSource('calc'); setFrom(h.from ?? null); setSeries(sampleSeries(m)); return;
     }
     if (dash && dash.weekly.length) {
       const w = dash.weekly.slice(-4); const n = w.length;
@@ -71,7 +70,7 @@ export default function PremiumQuoteScreen() {
       for (let i = 89; i >= 0; i--) { const d = new Date(now - i * 86400000).toISOString().slice(0, 10); out.push(by[d] ?? null); }
       setSeries(out); return;
     }
-    setCur(SAMPLE); setWi(SAMPLE); setSource('sample'); setSeries(sampleSeries(SAMPLE));
+    setFrom(null); setCur(SAMPLE); setWi(SAMPLE); setSource('sample'); setSeries(sampleSeries(SAMPLE));
   }, [dash]);
   useFocusEffect(useCallback(() => { init(); }, [init]));
   useEffect(() => {
@@ -125,7 +124,7 @@ export default function PremiumQuoteScreen() {
       <ScreenHeader title={t('pqr.h1')} subtitle={t('pqr.lead')} />
       <Row style={{ justifyContent: 'space-between' }} wrap>
         <Badge label={t('pqr.badge')} tone="gold" />
-        <Pressable onPress={() => router.push('/calculator')} accessibilityRole="link" hitSlop={8}><Txt v="small" w="700" color={c.accent}>{t('pqr.back')}</Txt></Pressable>
+        <Pressable onPress={() => (from ? router.push({ pathname: '/plan-result', params: { plan: from } }) : router.push('/calculator'))} accessibilityRole="link" hitSlop={8}><Txt v="small" w="700" color={c.accent}>{t(from ? 'pl2.qback' : 'pqr.back')}</Txt></Pressable>
       </Row>
       {source === 'sample' ? (
         <Card tone="soft" pad={14} style={{ marginTop: 14 }}>
@@ -286,7 +285,7 @@ export default function PremiumQuoteScreen() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 4 }}>
         {['A', 'B', 'C'].map((n, i) => (
           <Card key={n} pad={16} style={{ width: 270 }}>
-            <Row style={{ justifyContent: 'space-between' }}><Txt w="800" style={{ flex: 1 }}>{t('pqr.pol.name', { n })}</Txt><Tag label={t('pqr.sample')} /></Row>
+            <Row gap={12} align="flex-start"><PartnerTile icon="shield" /><Txt w="800" style={{ flex: 1, paddingTop: 12 }}>{t('pqr.pol.name', { n })}</Txt><Tag label={t('pqr.sample')} /></Row>
             <Txt v="h2" color={c.accent} style={{ marginTop: 8 }}>{rm0(Math.round(q.annualPremium * [1, 1.07, 0.95][i]))}<Txt v="small" color={c.mute}>{t('common.year')}</Txt></Txt>
             <Txt v="caption" color={c.mute}>{t('pqr.pol.ind')}</Txt>
             <View style={{ marginVertical: 12, gap: 6 }}>
@@ -306,16 +305,16 @@ export default function PremiumQuoteScreen() {
       {PERKS.map((p) => {
         const unlocked = streak.best >= p.min; const code = claims[p.id];
         return (
-          <Card key={p.id} pad={14} style={{ marginBottom: 10 }}>
+          <Card key={p.id} pad={14} style={{ marginBottom: 10, minHeight: 190 }}>
             <Row gap={12} align="flex-start">
-              <View style={{ width: 46, height: 46, borderRadius: 14, backgroundColor: unlocked ? c.redT : c.bgAlt, alignItems: 'center', justifyContent: 'center' }}><Txt w="800" color={unlocked ? c.accent : c.mute} style={{ fontSize: 18 }}>{p.ic}</Txt></View>
+              <PartnerTile icon={p.icon} locked={!unlocked} />
               <View style={{ flex: 1 }}>
-                <Txt v="caption" color={c.mute}>{p.brand} · {t('pqr.sample')}</Txt>
                 <Txt w="800">{t(`${p.k}.h`)}</Txt>
-                <Txt v="small" color={c.mute}>{t(`${p.k}.p`)}</Txt>
-                <Txt v="caption" color={c.mute} style={{ marginTop: 4 }}>{t('pqr.perk.exp', { d: dateStr(60) })}</Txt>
+                <Txt v="small" color={c.mute} style={{ marginTop: 2 }}>{t(`${p.k}.p`)}</Txt>
               </View>
+              <Tag label={t('pqr.sample')} />
             </Row>
+            <Txt v="caption" color={c.mute} style={{ marginTop: 10 }}>{t('pqr.perk.exp', { d: dateStr(60) })}</Txt>
             <View style={{ marginTop: 12 }}>
               {code ? <Row gap={10}><Txt v="caption" color={c.mute}>{t('rw.code')}</Txt><Txt w="800" color={c.accent} style={{ letterSpacing: 1 }}>{code}</Txt></Row>
                 : unlocked ? <Button title={t('pqr.perk.claim')} small full={false} onPress={() => { claim(p); toast(t('pqr.perk.claim')); }} />
@@ -326,10 +325,13 @@ export default function PremiumQuoteScreen() {
       })}
       <Txt v="h3" style={{ marginTop: 14, marginBottom: 10 }}>{t('pqr.ev.h')}</Txt>
       {EVENTS.map((e) => (
-        <Card key={e.id} pad={14} style={{ marginBottom: 10 }}>
-          <Row style={{ justifyContent: 'space-between' }} gap={8}><Txt w="800" style={{ flex: 1 }}>{t(`pqr.ev.${e.id}.h`)}</Txt><Tag label={t('pqr.sample')} /></Row>
-          <Txt v="caption" color={c.mute}>{dateStr(e.off)} · {t(e.loc)}</Txt>
-          <Txt v="small" color={c.mute} style={{ marginTop: 8, marginBottom: 12 }}>{t(`pqr.ev.${e.id}.p`)}</Txt>
+        <Card key={e.id} pad={14} style={{ marginBottom: 10, minHeight: 190 }}>
+          <Row gap={12} align="flex-start">
+            <PartnerTile icon={e.icon} />
+            <View style={{ flex: 1 }}><Txt w="800">{t(`pqr.ev.${e.id}.h`)}</Txt><Txt v="caption" color={c.mute}>{dateStr(e.off)} · {t(e.loc)}</Txt></View>
+            <Tag label={t('pqr.sample')} />
+          </Row>
+          <Txt v="small" color={c.mute} style={{ marginTop: 10, marginBottom: 12 }}>{t(`pqr.ev.${e.id}.p`)}</Txt>
           <Button title={joined[e.id] ? `✓ ${t('pqr.ev.joined')}` : t('pqr.ev.join')} small full={false} variant={joined[e.id] ? 'ghost' : 'primary'} onPress={() => join(e.id)} />
         </Card>
       ))}

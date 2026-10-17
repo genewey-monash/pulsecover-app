@@ -8,7 +8,7 @@ export const SAMPLE: Metrics = { steps: 6500, exerciseMin: 100, sleepHours: 6.5,
 export const BANDS = [{ g: 'A+', min: 90 }, { g: 'A', min: 75 }, { g: 'B', min: 60 }, { g: 'C', min: 40 }, { g: 'D', min: 25 }, { g: 'E', min: 0 }];
 
 /** In-memory hand-over from the calculator (not in the URL), like sessionStorage on the website. */
-export const pqHandoff: { value: (Metrics & { plan: string }) | null } = { value: null };
+export const pqHandoff: { value: (Metrics & { plan: string; from?: string }) | null } = { value: null };
 
 const round = (v: number, step: number) => Math.round(v / step) * step;
 export const withVal = (c: Metrics, f: Factor, v: number): Metrics => ({ ...c, [KEY[f]]: v });

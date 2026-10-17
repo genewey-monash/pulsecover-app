@@ -10,16 +10,17 @@ import { PLANS, Plan } from '../../lib/pricing';
 import { useCompare } from '../../lib/compare';
 import { useTheme } from '../../lib/theme';
 
+const BIZ = { id: 'business', base: 600, cover: 0, type: 'business', isNew: false } as unknown as Plan;
 const covs = (p: Plan) => 'ABCDEF'.slice(0, ({ A: 3, B: 4, C: 5, D: 6 } as Record<string, number>)[p.id] || 3).split('');
 
 export default function PlansTab() {
   const router = useRouter(); const { t } = useI18n(); const { c } = useTheme(); const toast = useToast(); const { width } = useLayout();
-  const [type, setType] = useState<'all' | 'individual' | 'family'>('all');
+  const [type, setType] = useState<'all' | 'individual' | 'family' | 'business'>('all');
   const [idx, setIdx] = useState(0);
   const [help, setHelp] = useState(false);
   const listRef = useRef<FlatList<Plan>>(null);
   const cmp = useCompare();
-  const list = useMemo(() => Object.values(PLANS).filter((p) => type === 'all' || p.type === type), [type]);
+  const list = useMemo(() => [...Object.values(PLANS), BIZ].filter((p) => type === 'all' || p.type === type), [type]);
   const cardW = Math.min(width, 520) - 56;
   const step = cardW + 12;
   const pick = (fn: () => void) => { fn(); setIdx(0); listRef.current?.scrollToOffset({ offset: 0, animated: false }); };
@@ -39,6 +40,7 @@ export default function PlansTab() {
         <Chip label={t('plans.all')} on={type === 'all'} onPress={() => pick(() => setType('all'))} />
         <Chip label={t('type.individual')} on={type === 'individual'} onPress={() => pick(() => setType(type === 'individual' ? 'all' : 'individual'))} icon="person" />
         <Chip label={t('type.family')} on={type === 'family'} onPress={() => pick(() => setType(type === 'family' ? 'all' : 'family'))} icon="people" />
+        <Chip label={t('pl2.type.biz')} on={type === 'business'} onPress={() => pick(() => setType(type === 'business' ? 'all' : 'business'))} icon="business" />
       </ScrollView>
       {list.length === 0 ? <View style={{ padding: 18 }}><EmptyState icon="search" title={t('plan.none')} /></View> : (
         <FlatList
@@ -49,6 +51,26 @@ export default function PlansTab() {
           onScroll={(e) => setIdx(Math.round(e.nativeEvent.contentOffset.x / step))} scrollEventThrottle={32}
           renderItem={({ item: p }) => {
             const on = cmp.selected.includes(p.id);
+            if ((p.id as string) === 'business') return (
+              <Card pad={0} style={{ width: cardW, overflow: 'hidden' }}>
+                <View style={{ backgroundColor: c.redT, paddingHorizontal: 16, paddingVertical: 14 }}>
+                  <Txt v="h1">{t('pl2.biz')}</Txt>
+                  <Row wrap gap={6} style={{ marginTop: 8 }}><Badge label={t('pl2.type.biz')} tone="dark" /></Row>
+                </View>
+                <View style={{ padding: 16 }}>
+                  <View><Txt v="caption" color={c.mute}>{t('pl2.biz.from')}</Txt><Txt v="h1" color={c.accent}>{rm(600, 0)}<Txt v="small" color={c.mute}>{t('common.year')}</Txt></Txt></View>
+                  <View style={{ height: 1, backgroundColor: c.line, marginVertical: 12 }} />
+                  {['pl2.biz.c1', 'pl2.biz.c2', 'pl2.biz.c3'].map((k) => (
+                    <Row key={k} gap={10} style={{ marginBottom: 6 }} align="flex-start"><Icon name="checkmark-circle" size={18} color={c.ok} /><Txt v="small" style={{ flex: 1 }}>{t(k)}</Txt></Row>
+                  ))}
+                  <Gap h={10} />
+                  <ButtonRow>
+                    <Button title={t('plan.quote')} variant="ghost" small style={{ flex: 1 }} onPress={() => router.push({ pathname: '/plan-result', params: { plan: 'business' } })} />
+                    <Button title={t('pl2.biz.enquire')} small style={{ flex: 1 }} onPress={() => router.push('/business')} />
+                  </ButtonRow>
+                </View>
+              </Card>
+            );
             return (
               <Card pad={0} style={{ width: cardW, overflow: 'hidden' }}>
                 <View style={{ backgroundColor: c.redT, paddingHorizontal: 16, paddingVertical: 14 }}>
@@ -71,7 +93,7 @@ export default function PlansTab() {
                   ))}
                   <Gap h={10} />
                   <ButtonRow>
-                    <Button title={t('plan.quote')} variant="ghost" small style={{ flex: 1 }} onPress={() => router.push({ pathname: '/calculator', params: { plan: p.id } })} />
+                    <Button title={t('plan.quote')} variant="ghost" small style={{ flex: 1 }} onPress={() => router.push({ pathname: '/plan-result', params: { plan: p.id } })} />
                     <Button title={t('plan.apply')} small style={{ flex: 1 }} onPress={() => router.push({ pathname: '/apply', params: { plan: p.id } })} />
                   </ButtonRow>
                   <Gap h={8} />

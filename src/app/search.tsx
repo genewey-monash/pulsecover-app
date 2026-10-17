@@ -33,7 +33,7 @@ export default function Search() {
       { href: user ? '/profile' : '/login', icon: 'person', title: user ? t('pf.h1') : t('nav.login'), sub: t('pf.sub'), group: pg, kw: 'profile account login register password logout' },
       { href: '/referral', icon: 'gift', title: t('ref.h'), sub: t('ref.p'), group: tl, kw: 'referral refer friend code' },
     ];
-    for (const id of ['A', 'B', 'C', 'D']) list.push({ href: '/calculator', params: { plan: id }, icon: 'shield', title: `${t('plan.word')} ${id}`, sub: t(`cov.${id}`), group: pl, kw: `plan ${id} cover` });
+    for (const id of ['A', 'B', 'C', 'D']) list.push({ href: '/plan-result', params: { plan: id }, icon: 'shield', title: `${t('plan.word')} ${id}`, sub: t(`cov.${id}`), group: pl, kw: `plan ${id} cover` });
     for (let i = 1; i <= 9; i++) list.push({ href: '/faq', params: { open: String(i) }, icon: 'help-circle-outline', title: t(`faq.q${i}`), sub: t(`faq.a${i}`), group: fq, kw: t(`faq.a${i}`) });
     return list;
   }, [t, user]);

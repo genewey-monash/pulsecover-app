@@ -10,12 +10,13 @@ import { useDash } from '../lib/data';
 import { useI18n } from '../lib/i18n';
 import { useToast } from '../lib/overlays';
 import { C, codeFor, compute, denseOf, isActive, lvIdx, monday, periodKey, questProgress, reqMet, resetIn, sampleRecords, today, ymd, type BadgeState, type Model, type RState, type Rec, type VaultDef } from '../lib/rewardsLogic';
+import { PartnerTile, SampleTag } from '../components/partner';
 import { kv } from '../lib/storage';
 import { useTheme } from '../lib/theme';
 
 interface ServerRewards { streak: number; best: number; coupons: { id: string; code: string | null }[] }
 type IconName = React.ComponentProps<typeof Icon>['name'];
-const BADGE_ICON: Record<string, IconName> = { steps: 'footsteps', bolt: 'flash', moon: 'moon', heart: 'heart', flame: 'flame', plug: 'watch', users: 'people', star: 'star' };
+const BADGE_ICON: Record<string, IconName> = { steps: 'footsteps-outline', bolt: 'flash-outline', moon: 'moon-outline', heart: 'heart-outline', flame: 'flame-outline', plug: 'watch-outline', users: 'people-outline', star: 'star-outline' };
 const BRONZE = '#B8733A', SILVER = '#8E98A6', GOLD = '#E8A317';
 
 function Ring({ frac, size = 60, color, label }: { frac: number; size?: number; color: string; label: string }) {
@@ -34,10 +35,7 @@ function Bar({ frac, color }: { frac: number; color?: string }) {
   const { c } = useTheme();
   return <View style={{ height: 10, borderRadius: 5, backgroundColor: c.line, overflow: 'hidden' }}><View style={{ height: 10, width: `${Math.round(Math.max(0, Math.min(1, frac)) * 100)}%`, backgroundColor: color ?? c.red }} /></View>;
 }
-function Tag({ label }: { label: string }) {
-  const { c } = useTheme();
-  return <View style={{ borderWidth: 1, borderColor: c.mute, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2, alignSelf: 'flex-start' }}><Txt v="caption" w="800" color={c.mute}>{label}</Txt></View>;
-}
+function Tag({ label }: { label: string }) { return <SampleTag label={label} />; }
 function H({ title, sub }: { title: string; sub?: string }) {
   const { c } = useTheme();
   return <View style={{ marginTop: 30, marginBottom: 12 }}><Txt v="h2">{title}</Txt>{sub ? <Txt v="small" color={c.mute} style={{ marginTop: 4 }}>{sub}</Txt> : null}</View>;
@@ -133,7 +131,7 @@ export default function RewardsScreen() {
       if (fresh.length) await kv.set(k('seen'), JSON.stringify(seen));
       if (msgs.length || fresh.length) setSt((s) => ({ ...s, ledger, seen }));
       const top = [...fresh].sort((a, b) => b.tier - a.tier)[0]; const shown = first && top ? top : fresh[0];
-      if (shown) { const extra = fresh.length - 1; setCeleb({ n: Date.now(), badge: { name: t(`rw2.b.${shown.b.def.id}.n`), tier: tierName(shown.tier), icon: BADGE_ICON[shown.b.def.icon] ?? 'star', color: tierColor(shown.tier) } }); toast(`${t('rw2.b.unlocked', { b: t(`rw2.b.${shown.b.def.id}.n`), t: tierName(shown.tier) })}${extra > 0 ? ' · ' + t('rw2.b.more', { n: extra }) : ''}`); }
+      if (shown) { const extra = fresh.length - 1; setCeleb({ n: Date.now(), badge: { name: t(`rw2.b.${shown.b.def.id}.n`), tier: tierName(shown.tier), icon: BADGE_ICON[shown.b.def.icon] ?? 'star-outline', color: tierColor(shown.tier) } }); toast(`${t('rw2.b.unlocked', { b: t(`rw2.b.${shown.b.def.id}.n`), t: tierName(shown.tier) })}${extra > 0 ? ' · ' + t('rw2.b.more', { n: extra }) : ''}`); }
       else if (msgs.length) { setCeleb({ n: Date.now(), badge: null }); toast(msgs[0]); }
     })();
   }, [loaded, src, data]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -282,7 +280,7 @@ export default function RewardsScreen() {
       {cand ? (
         <Card pad={16}>
           <Row gap={14}>
-            <View style={{ width: 60, height: 60, borderRadius: 18, backgroundColor: tierColor(cand.tier + 1), alignItems: 'center', justifyContent: 'center' }}><Icon name={BADGE_ICON[cand.def.icon] ?? 'star'} size={30} color="#fff" /></View>
+            <View style={{ width: 60, height: 60, borderRadius: 18, backgroundColor: tierColor(cand.tier + 1), alignItems: 'center', justifyContent: 'center' }}><Icon name={BADGE_ICON[cand.def.icon] ?? 'star-outline'} size={30} color="#fff" /></View>
             <View style={{ flex: 1 }}>
               <Txt v="caption" color={c.mute}>{t('rw2.b.next')}</Txt>
               <Txt w="800">{t(`rw2.b.${cand.def.id}.n`)} ({tierName(cand.tier + 1)})</Txt>
@@ -298,9 +296,9 @@ export default function RewardsScreen() {
         const tr = b.tier; const next = tr < 3 ? b.def.tiers[tr] : null; const val = next ? b.vals[tr] : b.def.tiers[2].need; const col = tr ? tierColor(tr) : c.mute; const open = openBadge === b.def.id;
         const shown = next ? `${fmt(Math.min(val, next.need), val % 1 ? 1 : 0)} / ${fmt(next.need)} ${t(`rw2.u.${next.unit}`)}` : t('rw2.b.max');
         return (
-          <Card key={b.def.id} pad={16} onPress={() => setOpenBadge(open ? null : b.def.id)} style={{ marginBottom: 10, backgroundColor: tr ? undefined : c.bgAlt }}>
+          <Card key={b.def.id} pad={16} onPress={() => setOpenBadge(open ? null : b.def.id)} style={{ marginBottom: 10, minHeight: 190, backgroundColor: tr ? undefined : c.bgAlt }}>
             <Row gap={14} align="flex-start">
-              <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: tr ? col : c.line, alignItems: 'center', justifyContent: 'center' }}><Icon name={BADGE_ICON[b.def.icon] ?? 'star'} size={26} color={tr ? '#fff' : c.mute} /></View>
+              <View style={{ width: 52, height: 52, borderRadius: 16, backgroundColor: tr ? col : 'transparent', borderWidth: 2, borderColor: tr ? col : c.mute, borderStyle: tr ? 'solid' : 'dashed', alignItems: 'center', justifyContent: 'center' }}><Icon name={BADGE_ICON[b.def.icon] ?? 'star-outline'} size={26} color={tr ? '#fff' : c.mute} /></View>
               <View style={{ flex: 1 }}>
                 <Txt v="caption" w="700" color={c.mute}>{t(`rw2.cat.${b.def.category}`)}</Txt>
                 <Txt w="800">{t(`rw2.b.${b.def.id}.n`)}</Txt>
@@ -329,7 +327,7 @@ export default function RewardsScreen() {
       <Card pad={14}>
         {hist.length ? hist.map((h, i) => (
           <Row key={`${h.b.def.id}${h.tier}`} gap={12} style={{ paddingVertical: 10, borderTopWidth: i ? 1 : 0, borderTopColor: c.line }}>
-            <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: tierColor(h.tier), alignItems: 'center', justifyContent: 'center' }}><Icon name={BADGE_ICON[h.b.def.icon] ?? 'star'} size={18} color="#fff" /></View>
+            <View style={{ width: 36, height: 36, borderRadius: 12, backgroundColor: tierColor(h.tier), alignItems: 'center', justifyContent: 'center' }}><Icon name={BADGE_ICON[h.b.def.icon] ?? 'star-outline'} size={18} color="#fff" /></View>
             <View style={{ flex: 1 }}><Txt w="700">{t(`rw2.b.${h.b.def.id}.n`)} <Txt v="small" w="800" color={tierColor(h.tier)}>{tierName(h.tier)}</Txt></Txt><Txt v="caption" color={c.mute}>{h.date ? fdate(h.date) : ''}</Txt></View>
             <Txt w="800" color={c.ok}>{t('rw2.q.xp', { n: h.xp })}</Txt>
           </Row>
@@ -366,14 +364,13 @@ export default function RewardsScreen() {
       {vaultItems.length ? vaultItems.map(({ it, met, premOk, claimed, state }) => {
         const ev = it.kind === 'event'; const rt = reqText(it);
         return (
-          <Card key={it.id} pad={14} style={{ marginBottom: 10, backgroundColor: state === 'locked' ? c.bgAlt : undefined }}>
-            <Row gap={12}>
-              <View style={{ width: 46, height: 46, borderRadius: 14, backgroundColor: state === 'locked' ? c.line : c.redT, alignItems: 'center', justifyContent: 'center' }}>{state === 'locked' ? <Icon name="lock-closed" size={20} color={c.mute} /> : <Txt w="800" color={c.accent} style={{ fontSize: 18 }}>{it.ic}</Txt>}</View>
-              <View style={{ flex: 1 }}><Txt v="caption" color={c.mute}>{it.brand} · {t('rw2.sample')}</Txt><Txt w="800">{t(`${it.k}.h`)}</Txt></View>
-              {it.premium ? <Badge label={t('rw2.v.premium')} tone="gold" /> : null}
+          <Card key={it.id} pad={14} style={{ marginBottom: 10, minHeight: 215, backgroundColor: state === 'locked' ? c.bgAlt : undefined }}>
+            <Row gap={12} align="flex-start">
+              <PartnerTile icon={it.icon} locked={state === 'locked'} />
+              <View style={{ flex: 1 }}><Txt w="800">{t(`${it.k}.h`)}</Txt><Txt v="small" color={c.mute} style={{ marginTop: 2 }} numberOfLines={2}>{t(`${it.k}.p`)}</Txt></View>
+              <View style={{ alignItems: 'flex-end', gap: 6 }}>{it.premium ? <Badge label={t('rw2.v.premium')} tone="gold" /> : null}<SampleTag label={t('rw2.sample')} /></View>
             </Row>
-            <Txt v="small" color={c.mute} style={{ marginTop: 8 }}>{t(`${it.k}.p`)}</Txt>
-            <Txt v="caption" color={c.mute} style={{ marginTop: 4 }}>{ev ? `${dateOff(it.off ?? 0)} · ${t(it.loc ?? '')}` : t('rw2.v.exp', { d: dateOff(60) })}</Txt>
+            <Txt v="caption" color={c.mute} style={{ marginTop: 10 }}>{ev ? `${dateOff(it.off ?? 0)} · ${t(it.loc ?? '')}` : t('rw2.v.exp', { d: dateOff(60) })}</Txt>
             <Txt v="caption" w="700" color={c.mute} style={{ marginTop: 4 }}>{t('rw2.v.by', { x: rt ?? t('rw2.v.premium') })}</Txt>
             <View style={{ marginTop: 12, gap: 8, alignItems: 'flex-start' }}>
               {state === 'claimed' ? (ev ? <Txt w="800" color={c.ok}>✓ {t('rw2.v.joined')}</Txt> : <View><Txt w="800" color={c.ok}>✓ {t('rw2.v.claimed')}</Txt><Row gap={8} style={{ marginTop: 6 }}><Txt v="caption" color={c.mute}>{t('rw.code')}</Txt><Txt w="800" color={c.accent} style={{ letterSpacing: 1 }}>{claimed}</Txt></Row></View>)
