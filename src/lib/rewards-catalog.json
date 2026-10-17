@@ -1,0 +1,64 @@
+{
+  "_note": "Single source for the Rewards page (website and app). Change thresholds, XP and links here only. metric names are implemented in public/js/rewards.js and src/lib/rewardsLogic.ts.",
+  "activeRule": { "steps": 7500, "exerciseMin": 20 },
+  "levels": [
+    { "id": "starter", "xp": 0 },
+    { "id": "active", "xp": 400 },
+    { "id": "pro", "xp": 1200 },
+    { "id": "elite", "xp": 2600 }
+  ],
+  "xp": { "activeDay": 10, "wearDay": 5, "referral": 100, "streak": { "7": 50, "14": 100, "30": 250, "60": 500 } },
+  "milestones": [7, 14, 30, 60],
+  "badges": [
+    { "id": "step", "category": "steps", "icon": "steps", "tiers": [
+      { "metric": "daysSteps", "param": 8000, "need": 1, "unit": "days", "xp": 30 },
+      { "metric": "daysSteps", "param": 10000, "need": 7, "unit": "days", "xp": 60 },
+      { "metric": "daysSteps", "param": 10000, "need": 30, "unit": "days", "xp": 120 } ] },
+    { "id": "move", "category": "exercise", "icon": "bolt", "tiers": [
+      { "metric": "weekExerciseBest", "param": 150, "need": 150, "unit": "min", "xp": 30 },
+      { "metric": "weeksExerciseRun", "param": 150, "need": 4, "unit": "weeks", "xp": 60 },
+      { "metric": "weeksExerciseRun", "param": 150, "need": 12, "unit": "weeks", "xp": 120 } ] },
+    { "id": "sleep", "category": "sleep", "icon": "moon", "tiers": [
+      { "metric": "daysSleep", "param": 7, "need": 3, "unit": "nights", "xp": 30 },
+      { "metric": "daysSleep", "param": 7, "need": 7, "unit": "nights", "xp": 60 },
+      { "metric": "daysSleep", "param": 7, "need": 30, "unit": "nights", "xp": 120 } ] },
+    { "id": "heart", "category": "heart", "icon": "heart", "tiers": [
+      { "metric": "hrDays", "param": 0, "need": 7, "unit": "days", "xp": 30 },
+      { "metric": "hrImprove", "param": 30, "need": 3, "unit": "bpm", "xp": 60 },
+      { "metric": "hrImprove", "param": 90, "need": 5, "unit": "bpm", "xp": 120 } ] },
+    { "id": "streak", "category": "consistency", "icon": "flame", "tiers": [
+      { "metric": "streakBest", "param": 0, "need": 7, "unit": "days", "xp": 30 },
+      { "metric": "streakBest", "param": 0, "need": 30, "unit": "days", "xp": 60 },
+      { "metric": "streakBest", "param": 0, "need": 60, "unit": "days", "xp": 120 } ] },
+    { "id": "on", "category": "connection", "icon": "plug", "tiers": [
+      { "metric": "weekWearBest", "param": 5, "need": 5, "unit": "days", "xp": 30 },
+      { "metric": "weeksWearRun", "param": 6, "need": 4, "unit": "weeks", "xp": 60 },
+      { "metric": "daysConnected", "param": 0, "need": 90, "unit": "days", "xp": 120 } ] },
+    { "id": "ref", "category": "social", "icon": "users", "tiers": [
+      { "metric": "friends", "param": 0, "need": 1, "unit": "friends", "xp": 30 },
+      { "metric": "friends", "param": 0, "need": 3, "unit": "friends", "xp": 60 },
+      { "metric": "friends", "param": 0, "need": 5, "unit": "friends", "xp": 120 } ] },
+    { "id": "lvl", "category": "milestones", "icon": "star", "tiers": [
+      { "metric": "xpBase", "param": 0, "need": 400, "unit": "xp", "xp": 30 },
+      { "metric": "xpBase", "param": 0, "need": 1200, "unit": "xp", "xp": 60 },
+      { "metric": "xpBase", "param": 0, "need": 2600, "unit": "xp", "xp": 120 } ] }
+  ],
+  "quests": [
+    { "id": "dsteps", "period": "day", "metric": "stepsToday", "goal": 8000, "unit": "steps", "xp": 20 },
+    { "id": "dsleep", "period": "day", "metric": "sleepToday", "goal": 7, "unit": "h", "xp": 15 },
+    { "id": "wex", "period": "week", "metric": "exerciseWeek", "goal": 150, "unit": "min", "xp": 60 },
+    { "id": "wsleep", "period": "week", "metric": "sleepNightsWeek", "goal": 4, "unit": "nights", "xp": 50, "minLevel": "active" },
+    { "id": "wwear", "period": "week", "metric": "wearDaysWeek", "goal": 6, "unit": "days", "xp": 40 }
+  ],
+  "vault": [
+    { "id": "pharm", "kind": "coupon", "brand": "Sample Pharmacy", "ic": "P", "k": "cp.pharm", "req": { "badge": "step", "tier": 1 } },
+    { "id": "cafe", "kind": "coupon", "brand": "Sample Cafe", "ic": "C", "k": "cp.cafe", "req": { "badge": "streak", "tier": 1 } },
+    { "id": "super", "kind": "coupon", "brand": "Sample Market", "ic": "M", "k": "cp.super", "req": { "badge": "move", "tier": 1 } },
+    { "id": "gym", "kind": "coupon", "brand": "Sample Gym", "ic": "G", "k": "cp.gym", "req": { "level": "pro" } },
+    { "id": "watch", "kind": "exclusive", "premium": true, "brand": "Sample Wearables", "ic": "W", "k": "pqr.perk.watch", "req": { "badge": "streak", "tier": 2 } },
+    { "id": "offer", "kind": "exclusive", "premium": true, "brand": "Sample Fitness", "ic": "F", "k": "rw2.v.offer", "req": { "level": "pro" } },
+    { "id": "run", "kind": "event", "premium": true, "brand": "Sample Events", "ic": "R", "k": "pqr.ev.run", "loc": "pqr.ev.loc.run", "off": 21, "req": null },
+    { "id": "chal", "kind": "event", "premium": true, "brand": "Sample Events", "ic": "S", "k": "pqr.ev.steps", "loc": "pqr.ev.loc.online", "off": 10, "req": { "level": "active" } },
+    { "id": "talk", "kind": "event", "premium": true, "brand": "Sample Events", "ic": "T", "k": "pqr.ev.talk", "loc": "pqr.ev.loc.online", "off": 35, "req": null }
+  ]
+}

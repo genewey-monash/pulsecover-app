@@ -9,7 +9,7 @@ export interface Policy { id: number; plan: string; number: string; status: stri
 export interface Week { start: string; days: number; steps: number; exerciseMin: number; sleepHours: number; restingHr: number; score: number; grade: string }
 export interface Claim { id: number; number: string; type: string; amount: number; description: string; incident_date: string; status: string; created: string; events: { status: string; note: string; created: string }[] }
 export interface Dashboard {
-  user: User; policy: Policy | null; metrics: { day: string; steps: number; score: number }[]; projected: Quote; score30: number | null; grade: string | null;
+  user: User; policy: Policy | null; metrics: { day: string; steps: number; score: number; exerciseMin?: number; sleepHours?: number; restingHr?: number }[]; projected: Quote; score30: number | null; grade: string | null;
   weekly: Week[]; connections: { provider: string; connected_at: string; last_sync: string }[]; paused: string | null; claims: Claim[]; referrals: number; ranking: { name: string; count: number }[];
 }
 interface Ctx {

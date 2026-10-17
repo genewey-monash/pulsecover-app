@@ -40,7 +40,7 @@ export function guestDash(g: GuestState): Dashboard {
   return {
     user: { id: 0, name: 'Guest', email: '', dob: '', lang: 'en', refcode: '', phone: '', address: '' },
     policy: null,
-    metrics: days.map((m) => ({ day: m.day, steps: m.steps, score: score(m).score })),
+    metrics: days.map((m) => ({ day: m.day, steps: m.steps, score: score(m).score, exerciseMin: m.exerciseMin, sleepHours: m.sleepHours, restingHr: m.restingHr })),
     projected: quote(avg, {}), score30: sc, grade: gradeOf(sc), weekly,
     connections: g.providers.map((p) => ({ provider: p, connected_at: now, last_sync: now })),
     paused: null, claims: [], referrals: 0, ranking: [],
