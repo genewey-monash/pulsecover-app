@@ -165,6 +165,7 @@ export function SavingsCard({ kind, metrics, plan, members = 1, sample }: { kind
   const { t } = useI18n(); const { c } = useTheme(); const { sub } = useSub();
   const cost = annualCost(sub.billing); const q = quote(metrics, { plan }); const imp = improvementPlan(metrics, plan);
   let now = q.savings; let best = imp.best.totalSaving; let extra: React.ReactNode = null; let note = '';
+  if (kind !== 'family') extra = <Row2 k={t('sv.extra')} v={`+${rm(Math.max(0, best - now))}`} />;
   if (kind === 'family') { now = q.savings * members; best = imp.best.totalSaving * members; note = t('sv.fam.note'); extra = <Row2 k={t('sv.fam.per')} v={rm(imp.best.totalSaving)} sub={t('sv.now.per', { x: rm(q.savings) })} />; }
   const net = Math.round((best - cost) * 100) / 100; const pos = net > 0; const max = Math.max(cost, best, 1);
   const bar = (label: string, v: number, col: string) => (
