@@ -18,11 +18,10 @@ export function gradeOf(score: number): string;
 export function planOf(id?: string): Plan;
 export function quote(m: Partial<Metrics>, opts?: { plan?: string; appSubscription?: boolean }): Quote;
 export function averageMetrics(list: Partial<Metrics>[]): Metrics;
-export function smeQuote(employees: number, avgScore: number): { perEmployeeBase: number; employees: number; avgScore: number; adjustmentPct: number; bulkDiscountPct: number; perEmployeeAnnual: number; totalAnnual: number; savingsVsFlat: number };
 export function clamp(v: number, a: number, b: number): number;
 export function num(v: unknown, d: number): number;
 
-export interface Config { subscription: { monthly: number; yearly: number }; base: { individual: number; family: number; business: number }; discountFromScore: number; maxDiscount: number; familyMaxMembers: number }
+export interface Config { subscription: { monthly: number; yearly: number }; base: { individual: number; family: number }; discountFromScore: number; maxDiscount: number; familyMaxMembers: number }
 export const CONFIG: Config;
 export const SUB: { monthly: number; yearly: number; monthlyTotal: number; saving: number; savingPct: number; effectiveMonthly: number };
 export type Billing = 'monthly' | 'yearly';

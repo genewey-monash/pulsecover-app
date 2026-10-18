@@ -205,8 +205,8 @@ export default function RewardsScreen() {
           </View>
         </Row>
         <Row gap={10} style={{ marginTop: 16 }}>
-          {([[<Icon key="f" name="flame" size={20} color={c.accent} />, String(m.cur), t('rw2.streakday')], [null, String(m.best), t('rw2.longest')], [null, `${earnedTiers} / ${allTiers}`, t('rw2.badges', { a: earnedTiers, b: allTiers })]] as [React.ReactNode, string, string][]).map(([ic, v, l], i) => (
-            <View key={i} style={{ flex: 1, backgroundColor: c.bgAlt, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 6, alignItems: 'center' }}>
+          {([[<Icon key="f" name="flame" size={20} color={c.accent} />, String(m.cur), t('rw2.streakday')], [null, String(m.best), t('rw2.longest')], [null, `${earnedTiers} / ${allTiers}`, t('rw2.badges.short')]] as [React.ReactNode, string, string][]).map(([ic, v, l], i) => (
+            <View key={i} style={{ flex: 1, minHeight: 84, backgroundColor: c.bgAlt, borderRadius: 14, paddingVertical: 12, paddingHorizontal: 6, alignItems: 'center', justifyContent: 'center' }}>
               <Row gap={4}>{ic}<Txt v="h3">{v}</Txt></Row>
               <Txt v="caption" color={c.mute} align="center" style={{ marginTop: 2 }}>{l}</Txt>
             </View>

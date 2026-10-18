@@ -11,7 +11,7 @@ import { rm, useDash } from '../lib/data';
 import { errorText } from '../lib/errors';
 import { useI18n } from '../lib/i18n';
 import { pqHandoff } from '../lib/pqLogic';
-import { CONFIG, PLANS, quote, smeQuote, type Metrics, type PlanId } from '../lib/pricing';
+import { CONFIG, PLANS, quote, type Metrics, type PlanId } from '../lib/pricing';
 import { useTheme } from '../lib/theme';
 
 interface FamilyMember { id: number; email: string; relationship: string; status: string; display: string; expiresAt: string; canResendAt: string; error: string | null; label?: string; score?: number; grade?: string; adjustmentPct?: number; components?: { steps: number; exercise: number; sleep: number; heart: number }; annualPremium?: number; base?: number }
@@ -27,7 +27,6 @@ export default function PlanResultScreen() {
   const p = useLocalSearchParams<{ plan?: string }>();
   const raw = String(p.plan ?? 'A').toUpperCase(); const biz = raw === 'BUSINESS'; const id: PlanId = biz ? 'A' : ((PLANS as Record<string, unknown>)[raw] ? (raw as PlanId) : 'A');
   const plan = PLANS[id]; const fam = !biz && plan.type === 'family';
-  const [heads, setHeads] = useState(25);
 
   // linked wearable (account or guest) when there is data, otherwise the SAMPLE values from the calculator's defaults
   const real = !!(dash && dash.weekly.length);
@@ -39,8 +38,7 @@ export default function PlanResultScreen() {
     return { steps: 7500, exerciseMin: 100, sleepHours: 7.5, restingHr: 66 };
   }, [dash]);
   const q = useMemo(() => quote(m, { plan: id }), [m, id]);
-  const sme = useMemo(() => smeQuote(heads, q.score), [heads, q.score]);
-  const annual = biz ? sme.perEmployeeAnnual : q.annualPremium; const adj = biz ? sme.adjustmentPct : q.adjustmentPct; const saved = biz ? q.base - sme.perEmployeeAnnual : q.savings;
+  const annual = q.annualPremium; const adj = q.adjustmentPct; const saved = q.savings;
   // numbers travel to /premium-quote in memory (not in the address) once the upsell is used
   useEffect(() => { pqHandoff.value = { plan: id, ...m, from: biz ? 'business' : id }; }, [m, id, biz]);
 
@@ -178,13 +176,13 @@ export default function PlanResultScreen() {
             </View>
             <ScoreRing score={q.score} grade={q.grade} size={104} label={t('calc.score')} />
           </Row>
-          <View style={{ marginTop: 14 }}>
-            <KV k={`${t('calc.base')}${biz ? ' / ' + t('pl2.biz.per').toLowerCase() : ''}`} v={rm(q.base)} />
+          {!biz ? <View style={{ marginTop: 14 }}>
+            <KV k={t('calc.base')} v={rm(q.base)} />
             <KV k={t('calc.adj')} v={`${adj > 0 ? '+' : ''}${adj}%`} />
-            <KV k={`${t('calc.yours')}${biz ? ' / ' + t('pl2.biz.per').toLowerCase() : ''}`} v={rm(annual)} big />
+            <KV k={t('calc.yours')} v={rm(annual)} big />
             <KV k={t('calc.permonth')} v={rm(annual / 12)} />
             <KV k={t(saved >= 0 ? 'calc.saved' : 'calc.extra')} v={rm(Math.abs(saved))} last />
-          </View>
+          </View> : null}
           <Txt v="label" w="800" style={{ marginTop: 16 }}>{t('calc.breakdown')}</Txt>
           <MetricBar label={t('comp.steps')} value={q.components.steps} right={String(q.components.steps)} />
           <MetricBar label={t('comp.exercise')} value={q.components.exercise} right={String(q.components.exercise)} />
@@ -192,13 +190,9 @@ export default function PlanResultScreen() {
           <MetricBar label={t('comp.heart')} value={q.components.heart} right={String(q.components.heart)} />
           {biz ? (
             <View style={{ marginTop: 18 }}>
-              <Txt v="label" w="800">{t('pl2.biz.h')}</Txt>
-              <Txt v="caption" color={c.mute} style={{ marginTop: 8, marginBottom: 6 }}>{t('pl2.biz.heads')}</Txt>
-              <Row gap={8} wrap>{[5, 10, 25, 50, 100, 250, 500].map((n) => <Chip key={n} label={String(n)} on={heads === n} onPress={() => setHeads(n)} />)}</Row>
-              <View style={{ marginTop: 8 }}>
-                <KV k={t('pl2.biz.per')} v={rm(sme.perEmployeeAnnual)} /><KV k={t('pl2.biz.total')} v={rm(sme.totalAnnual)} /><KV k={t('pl2.biz.disc')} v={`${sme.bulkDiscountPct}%`} last />
-              </View>
-              <Txt v="caption" color={c.mute}>{t('pl2.biz.note')}</Txt>
+              <Txt v="label" w="800">{t('pl2.biz.custom')}</Txt>
+              <Txt v="body" color={c.mute} style={{ marginTop: 8 }}>{t('pl2.biz.custom.p')}</Txt>
+              <Txt v="caption" color={c.mute} style={{ marginTop: 8 }}>{t('pl2.biz.note')}</Txt>
             </View>
           ) : null}
           <Gap h={18} />
@@ -208,7 +202,7 @@ export default function PlanResultScreen() {
         </Card>
       )}
 
-      <SavingsCard kind={fam ? 'family' : biz ? 'biz' : 'ind'} metrics={m} plan={id} members={Math.max(1, scored.length)} heads={heads} sample={!real} />
+      {!biz ? <SavingsCard kind={fam ? 'family' : 'ind'} metrics={m} plan={id} members={Math.max(1, scored.length)} sample={!real} /> : null}
 
       {/* highlighted Premium upsell */}
       <Card pad={20} style={{ marginTop: 18, borderColor: c.gold, borderWidth: 1.5, shadowColor: c.red, shadowOpacity: 0.3, shadowRadius: 18, elevation: 4 }}>

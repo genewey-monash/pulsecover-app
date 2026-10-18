@@ -5,8 +5,9 @@ const round2 = (v) => Math.round(v * 100) / 100;
 const CONFIG = {
   // Premium subscription (illustrative). Yearly is entered as a price; the monthly total, saving and percentage are derived below.
   subscription: { monthly: 14.9, yearly: 125 },
-  // Base premiums per year (illustrative): Individual per person, Family per member (up to familyMaxMembers), Business per employee.
-  base: { individual: 950, family: 1000, business: 950 },
+  // Base premiums per year (illustrative): Individual per person, Family per member (up to familyMaxMembers, slightly cheaper than Individual).
+  // Business has NO fixed price: it is custom pricing quoted by the team, so there is nothing to put here.
+  base: { individual: 950, family: 900 },
   // Wearable discount: no discount at a score of discountFromScore or below, rising in a straight line to maxDiscount at a score of 100.
   discountFromScore: 50,
   maxDiscount: 0.20,
@@ -35,7 +36,7 @@ const APP_SUB_MONTHLY = CONFIG.subscription.monthly; // paid Premium Quote tier 
 const money = (n) => Number(n).toLocaleString('en-US'); // 1000 -> "1,000"
 // Values that text strings can use as {tokens}, so wording never hard-codes a price or percentage.
 const tokens = () => ({
-  maxPct: String(Math.round(CONFIG.maxDiscount * 100)), indBase: money(CONFIG.base.individual), famBase: money(CONFIG.base.family), bizBase: money(CONFIG.base.business),
+  maxPct: String(Math.round(CONFIG.maxDiscount * 100)), indBase: money(CONFIG.base.individual), famBase: money(CONFIG.base.family),
   subMonthly: SUB.monthly.toFixed(2), subYearly: String(SUB.yearly), subMonthlyTotal: SUB.monthlyTotal.toFixed(2), subSaving: SUB.saving.toFixed(2), subPct: String(SUB.savingPct), subEff: SUB.effectiveMonthly.toFixed(2),
   famMax: String(CONFIG.familyMaxMembers)
 });
@@ -100,20 +101,6 @@ function averageMetrics(list) {
   return { steps: sum.steps / n, exerciseMin: (sum.exerciseMin / n) * 7, sleepHours: sum.sleepHours / n, restingHr: sum.restingHr / n };
 }
 
-// SME group: per-employee base, discount tied to aggregate activity score (same wearable discount as individuals), plus a headcount discount
-function smeQuote(employees, avgScore) {
-  const n = Math.max(1, Math.floor(num(employees, 1)));
-  const sc = clamp(num(avgScore, 50), 0, 100);
-  const adj = adjustment(sc);
-  const bulk = n >= 100 ? 0.05 : n >= 50 ? 0.03 : n >= 10 ? 0.02 : 0;
-  const base = CONFIG.base.business, perEmp = base * (1 + adj) * (1 - bulk);
-  return {
-    employees: n, avgScore: sc, adjustmentPct: Math.round(adj * 1000) / 10, bulkDiscountPct: bulk * 100,
-    perEmployeeAnnual: Math.round(perEmp * 100) / 100, totalAnnual: Math.round(perEmp * n * 100) / 100,
-    savingsVsFlat: Math.round((base * n - perEmp * n) * 100) / 100, perEmployeeBase: base
-  };
-}
-
 // Financial model from the BMC workbook (for the investor page). Uses the workbook's own RM600 average-premium assumption on purpose;
 // it is NOT the customer-facing price (see CONFIG). Update the workbook and these constants together if the model should change.
 function financials() {
@@ -158,4 +145,4 @@ function improvementPlan(m, planId) {
   return { rows, base, best: { factors: top.map((r) => r.f), score: q.score, annual: q.annualPremium, saving: Math.max(0, round2(base.annualPremium - q.annualPremium)), totalSaving: Math.max(0, round2(q.base - q.annualPremium)) } };
 }
 
-module.exports = { improvementPlan, fullTarget, CONFIG, SUB, subscriptionPrice, subscriptionAnnualCost, tokens, WEIGHTS, GRADES, gradeOf, PLANS, planOf, BASE_PREMIUM, BAND, COMMISSION, APP_SUB_MONTHLY, score, adjustment, quote, averageMetrics, smeQuote, financials, clamp, num };
+module.exports = { improvementPlan, fullTarget, CONFIG, SUB, subscriptionPrice, subscriptionAnnualCost, tokens, WEIGHTS, GRADES, gradeOf, PLANS, planOf, BASE_PREMIUM, BAND, COMMISSION, APP_SUB_MONTHLY, score, adjustment, quote, averageMetrics, financials, clamp, num };

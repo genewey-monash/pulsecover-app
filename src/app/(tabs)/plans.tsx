@@ -58,7 +58,7 @@ export default function PlansTab() {
                   <Row wrap gap={6} style={{ marginTop: 8 }}><Badge label={t('pl2.type.biz')} tone="dark" /></Row>
                 </View>
                 <View style={{ padding: 16 }}>
-                  <View><Txt v="caption" color={c.mute}>{t('pl2.biz.from')}</Txt><Txt v="h1" color={c.accent}>{rm(600, 0)}<Txt v="small" color={c.mute}>{t('common.year')}</Txt></Txt></View>
+                  <View><Txt v="h1" color={c.accent}>{t('pl2.biz.custom')}</Txt></View>
                   <View style={{ height: 1, backgroundColor: c.line, marginVertical: 12 }} />
                   {['pl2.biz.c1', 'pl2.biz.c2', 'pl2.biz.c3'].map((k) => (
                     <Row key={k} gap={10} style={{ marginBottom: 6 }} align="flex-start"><Icon name="checkmark-circle" size={18} color={c.ok} /><Txt v="small" style={{ flex: 1 }}>{t(k)}</Txt></Row>

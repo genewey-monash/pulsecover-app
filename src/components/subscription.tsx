@@ -3,7 +3,7 @@ import { Pressable, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Badge, Button, Card, Gap, Icon, Row, Sheet, Txt, tap } from './ui';
 import { useI18n } from '../lib/i18n';
-import { improvementPlan, quote, smeQuote, SUB, type Billing, type Metrics } from '../lib/pricing';
+import { improvementPlan, quote, SUB, type Billing, type Metrics } from '../lib/pricing';
 import { addPeriod, annualCost, useSub } from '../lib/subscription';
 import { rm } from '../lib/data';
 import { radius, useTheme } from '../lib/theme';
@@ -161,12 +161,11 @@ export function ManageSubscription() {
 }
 
 /** Savings vs subscription: current saving, best-case saving, Premium cost, net saving and a small bar chart. */
-export function SavingsCard({ kind, metrics, plan, members = 1, heads = 1, sample }: { kind: 'ind' | 'family' | 'biz'; metrics: Metrics; plan: string; members?: number; heads?: number; sample?: boolean }) {
+export function SavingsCard({ kind, metrics, plan, members = 1, sample }: { kind: 'ind' | 'family'; metrics: Metrics; plan: string; members?: number; sample?: boolean }) {
   const { t } = useI18n(); const { c } = useTheme(); const { sub } = useSub();
   const cost = annualCost(sub.billing); const q = quote(metrics, { plan }); const imp = improvementPlan(metrics, plan);
   let now = q.savings; let best = imp.best.totalSaving; let extra: React.ReactNode = null; let note = '';
   if (kind === 'family') { now = q.savings * members; best = imp.best.totalSaving * members; note = t('sv.fam.note'); extra = <Row2 k={t('sv.fam.per')} v={rm(imp.best.totalSaving)} sub={t('sv.now.per', { x: rm(q.savings) })} />; }
-  if (kind === 'biz') { now = smeQuote(heads, q.score).savingsVsFlat; best = smeQuote(heads, imp.best.score).savingsVsFlat; note = t('sv.biz.note'); extra = <Row2 k={t('sv.biz.per')} v={rm(best / heads)} />; }
   const net = Math.round((best - cost) * 100) / 100; const pos = net > 0; const max = Math.max(cost, best, 1);
   const bar = (label: string, v: number, col: string) => (
     <View style={{ marginTop: 12 }}>
