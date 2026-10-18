@@ -3,13 +3,15 @@ import { View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Button, Card, Gap, Icon, Row, Screen, ScreenHeader, Txt } from '../components/ui';
 import { useI18n } from '../lib/i18n';
+import { priceLabel, SubscribeCard } from '../components/subscription';
+import { useSub } from '../lib/subscription';
 import { useTheme } from '../lib/theme';
 
 const ROWS = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8'] as const;
 
 /** Free vs Premium Quote: what is included at each level. */
 export default function PremiumScreen() {
-  const router = useRouter(); const { t } = useI18n(); const { c } = useTheme();
+  const router = useRouter(); const { t } = useI18n(); const { c } = useTheme(); const { sub } = useSub();
   const Mark = ({ yes }: { yes: boolean }) => yes
     ? <View style={{ width: 26, height: 26, borderRadius: 13, backgroundColor: c.ok, alignItems: 'center', justifyContent: 'center' }}><Icon name="checkmark" size={16} color="#fff" /></View>
     : <Txt color={c.mute} style={{ fontSize: 20, lineHeight: 24 }}>–</Txt>;
@@ -30,7 +32,7 @@ export default function PremiumScreen() {
         <Row gap={0} style={{ paddingVertical: 14, paddingHorizontal: 14, borderTopWidth: 1, borderTopColor: c.line }}>
           <View style={{ flex: 1 }}><Txt w="700">{t('pq.r.price')}</Txt></View>
           <View style={{ width: 62, alignItems: 'center' }}><Txt w="800">{t('pq.v.free')}</Txt></View>
-          <View style={{ width: 86, alignItems: 'center' }}><Txt v="caption" w="800" color={c.accent} align="center">{t('pq.v.premium')}</Txt></View>
+          <View style={{ width: 86, alignItems: 'center' }}><Txt v="caption" w="800" color={c.accent} align="center">{priceLabel(sub.billing, t)}</Txt></View>
         </Row>
         {ROWS.map((r, i) => (
           <Row key={r} gap={0} style={{ paddingVertical: 14, paddingHorizontal: 14, borderTopWidth: 1, borderTopColor: c.line, backgroundColor: i % 2 ? 'transparent' : c.bgAlt }}>
@@ -41,6 +43,8 @@ export default function PremiumScreen() {
         ))}
       </Card>
       <Gap h={18} />
+      <SubscribeCard />
+      <Gap h={14} />
       <Button title={t('pq.premium.cta')} icon="star" onPress={() => router.push('/premium-quote')} />
       <Gap h={10} />
       <Button title={t('pq.free.cta')} variant="ghost" onPress={() => router.navigate('/(tabs)/wearable')} />

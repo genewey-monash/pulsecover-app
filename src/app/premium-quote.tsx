@@ -14,6 +14,8 @@ import { useI18n } from '../lib/i18n';
 import { PLANS, type Metrics, type PlanId } from '../lib/pricing';
 import { BANDS, calc, FACTORS, KEY, pqHandoff, planGoals, SAMPLE, sampleSeries, scenarios, status, type Factor } from '../lib/pqLogic';
 import { PartnerTile, SampleTag } from '../components/partner';
+import { priceLabel, SavingsCard, SubscribeCard, SubscribeSheet } from '../components/subscription';
+import { useSub } from '../lib/subscription';
 import { kv } from '../lib/storage';
 import { useToast } from '../lib/overlays';
 import { useTheme } from '../lib/theme';
@@ -41,6 +43,22 @@ function H({ title, sub }: { title: string; sub?: string }) {
   return <View style={{ marginTop: 30, marginBottom: 12 }}><Txt v="h2">{title}</Txt>{sub ? <Txt v="small" color={c.mute} style={{ marginTop: 4 }}>{sub}</Txt> : null}</View>;
 }
 
+/** A Premium section: members see the content, everyone else sees the title and a lock card with the subscribe button. */
+function Gate({ locked, title, onUnlock, children }: { locked: boolean; title: string; onUnlock: () => void; children: React.ReactNode }) {
+  const { t } = useI18n(); const { c } = useTheme(); const { sub } = useSub();
+  if (!locked) return <>{children}</>;
+  return (
+    <>
+      <H title={title} />
+      <Card pad={18} style={{ borderColor: c.gold, borderWidth: 1.5 }}>
+        <Row gap={12} align="flex-start"><View style={{ width: 42, height: 42, borderRadius: 14, borderWidth: 2, borderStyle: 'dashed', borderColor: c.mute, alignItems: 'center', justifyContent: 'center' }}><Icon name="lock-closed" size={20} color={c.mute} /></View>
+          <View style={{ flex: 1 }}><Txt w="800">{t('sb.lock.h')}</Txt><Txt v="small" color={c.mute} style={{ marginTop: 2 }}>{t('sb.lock.p')}</Txt></View></Row>
+        <Gap h={12} /><Button title={`${t('sb.cta')} - ${priceLabel(sub.billing, t)}`} icon="star" onPress={onUnlock} />
+      </Card>
+    </>
+  );
+}
+
 /** Premium Quote Results: detailed assessment, savings scenarios, coaching plan, policy guidance and perks. Mirrors /premium-quote on the website. */
 export default function PremiumQuoteScreen() {
   const router = useRouter(); const { t, lang } = useI18n(); const { c } = useTheme(); const { user } = useAuth(); const { dash } = useDash(); const toast = useToast();
@@ -53,6 +71,8 @@ export default function PremiumQuoteScreen() {
   const [streak, setStreak] = useState({ best: 8, sample: true });
   const [open, setOpen] = useState(false); const [email, setEmail] = useState(user?.email ?? ''); const [err, setErr] = useState<string | null>(null); const [ok, setOk] = useState(false); const [busy, setBusy] = useState(false);
   const [faq, setFaq] = useState<number | null>(null);
+  const { sub, isPremium, setBilling } = useSub(); const [gateOpen, setGateOpen] = useState(false);
+  const premium = isPremium || !!(source === 'wearable' && dash?.policy && dash.policy.app_sub);
 
   // inputs: calculator hand-over first, then the linked wearable, else sample values
   const init = useCallback(() => {
@@ -158,7 +178,16 @@ export default function PremiumQuoteScreen() {
         <Txt v="caption" color={c.mute} style={{ marginTop: 12 }}>{t('pqr.indicative')}</Txt>
       </Card>
 
+      {!premium ? (
+        <Card tone="soft" pad={16} style={{ marginTop: 14 }}>
+          <Txt v="h3">{t('pqr.free.h')}</Txt><Txt v="small" color={c.mute} style={{ marginTop: 4, marginBottom: 12 }}>{t('pqr.free.p')}</Txt>
+          <SubscribeCard bare nextHref="/premium-quote" />
+        </Card>
+      ) : null}
+      <SavingsCard kind={plain.type === 'family' ? 'family' : 'ind'} metrics={cur} plan={plan} members={4} sample={source !== 'wearable'} />
+
       {/* 2. detailed assessment */}
+      <Gate locked={!premium} title={t('pqr.s2.h')} onUnlock={() => setGateOpen(true)}>
       <H title={t('pqr.s2.h')} sub={t('pqr.s2.p')} />
       {FACTORS.map((f) => {
         const v = q.components[f]; const st = status(v);
@@ -188,6 +217,8 @@ export default function PremiumQuoteScreen() {
         <View style={{ marginTop: 10 }} onLayout={(e) => setChartW(Math.max(220, Math.round(e.nativeEvent.layout.width)))}>{points.length ? <LineChart points={points} width={chartW} /> : null}</View>
         <Txt v="caption" color={c.mute}>{t('pqr.tr.note')}</Txt>
       </Card>
+
+      </Gate>
 
       {/* 3. savings */}
       <H title={t('pqr.s3.h')} sub={t('pqr.s3.p')} />
@@ -249,6 +280,7 @@ export default function PremiumQuoteScreen() {
       <Txt v="caption" color={c.mute} style={{ marginTop: 10 }}>{t('pqr.s3.note')}</Txt>
 
       {/* 4. coaching */}
+      <Gate locked={!premium} title={t('pqr.s4.h')} onUnlock={() => setGateOpen(true)}>
       <H title={t('pqr.s4.h')} sub={t('pqr.s4.p')} />
       {goals.length ? (
         <>
@@ -280,7 +312,10 @@ export default function PremiumQuoteScreen() {
         </>
       ) : <Card><Txt>{t('pqr.p.none')}</Txt></Card>}
 
+      </Gate>
+
       {/* 5. policy guidance */}
+      <Gate locked={!premium} title={t('pqr.s5.h')} onUnlock={() => setGateOpen(true)}>
       <H title={t('pqr.s5.h')} sub={t('pqr.s5.p')} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12, paddingRight: 4 }}>
         {['A', 'B', 'C'].map((n, i) => (
@@ -300,7 +335,10 @@ export default function PremiumQuoteScreen() {
       </ScrollView>
       <Txt v="caption" color={c.mute} style={{ marginTop: 10 }}>{t('pqr.s5.note')}</Txt>
 
+      </Gate>
+
       {/* 6. perks and events */}
+      <Gate locked={!premium} title={t('pqr.s6.h')} onUnlock={() => setGateOpen(true)}>
       <H title={t('pqr.s6.h')} sub={streak.sample ? t('pqr.perk.sample', { n: streak.best }) : t('pqr.perk.yours', { n: streak.best })} />
       {PERKS.map((p) => {
         const unlocked = streak.best >= p.min; const code = claims[p.id];
@@ -337,6 +375,8 @@ export default function PremiumQuoteScreen() {
       ))}
       <Txt v="caption" color={c.mute}>{t('rw.demo')}</Txt>
 
+      </Gate>
+
       {/* 7. call to action and FAQ */}
       <H title={t('pqr.s7.h')} />
       <Card pad={18}>
@@ -358,6 +398,7 @@ export default function PremiumQuoteScreen() {
       </View>
       <Txt v="caption" color={c.mute} style={{ marginTop: 14 }}>{t('pqr.disc')}</Txt>
 
+      <SubscribeSheet visible={gateOpen} billing={sub.billing} onBilling={setBilling} onClose={() => setGateOpen(false)} nextHref="/premium-quote" />
       <Sheet visible={open} onClose={() => setOpen(false)} title={t('eq.h')}>
         {ok ? (<><Notice text={t('eq.ok')} /><Gap h={14} /><Button title={t('connect.cancel')} variant="ghost" onPress={() => setOpen(false)} /></>) : (
           <>

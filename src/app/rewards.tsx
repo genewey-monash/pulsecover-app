@@ -12,6 +12,7 @@ import { useToast } from '../lib/overlays';
 import { C, codeFor, compute, denseOf, isActive, lvIdx, monday, periodKey, questProgress, reqMet, resetIn, sampleRecords, today, ymd, type BadgeState, type Model, type RState, type Rec, type VaultDef } from '../lib/rewardsLogic';
 import { PartnerTile, SampleTag } from '../components/partner';
 import { kv } from '../lib/storage';
+import { useSub } from '../lib/subscription';
 import { useTheme } from '../lib/theme';
 
 interface ServerRewards { streak: number; best: number; coupons: { id: string; code: string | null }[] }
@@ -79,7 +80,7 @@ function Celebration({ show, badge, onDone }: { show: number; badge: { name: str
 export default function RewardsScreen() {
   const router = useRouter(); const { t, lang } = useI18n(); const { c, isDark } = useTheme(); const { user } = useAuth(); const { dash } = useDash(); const toast = useToast();
   const [server, setServer] = useState<ServerRewards | null>(null);
-  const [demoPrem, setDemoPrem] = useState(false); const [fc, setFc] = useState(false);
+  const [fc, setFc] = useState(false); const { isPremium } = useSub();
   const [st, setSt] = useState<RState>({ ledger: {}, seen: {}, freeze: null }); const [claims, setClaims] = useState<Record<string, string>>({}); const [loaded, setLoaded] = useState(false);
   const [view, setView] = useState<7 | 30>(7); const [bf, setBf] = useState<'all' | 'earned' | 'progress' | 'locked'>('all'); const [vt, setVt] = useState<'all' | 'unlocked' | 'locked' | 'events'>('all');
   const [openBadge, setOpenBadge] = useState<string | null>(null); const [freezeOpen, setFreezeOpen] = useState(false); const [xpOpen, setXpOpen] = useState(false); const [tick, setTick] = useState(0);
@@ -100,7 +101,7 @@ export default function RewardsScreen() {
   const data = useMemo(() => denseOf(recs ?? sampleRecords()), [recs]);
   const friends = recs ? (dash?.referrals ?? 0) : 1;
   const realPremium = !!(recs && dash?.policy && dash.policy.app_sub);
-  const premium = realPremium || demoPrem;
+  const premium = realPremium || isPremium;
   const k = (name: string) => `pc_rw_${name}_${src}`;
 
   useFocusEffect(useCallback(() => { if (user) api<ServerRewards>('/rewards').then(setServer).catch(() => {}); else setServer(null); }, [user]));
@@ -109,8 +110,8 @@ export default function RewardsScreen() {
     (async () => {
       const read = async <T,>(key: string, d: T): Promise<T> => { try { const v = await kv.get(key); return v ? (JSON.parse(v) as T) : d; } catch { return d; } };
       const [ledger, seen, freeze, cl] = await Promise.all([read<Record<string, number>>(k('q'), {}), read<Record<string, string>>(k('seen'), {}), read<RState['freeze']>(k('freeze'), null), read<Record<string, string>>(k('claims'), {})]);
-      const dp = await read<boolean>('pc_rw_demo_prem', false); const f = await read<boolean>('pc_rw_fc', false);
-      if (live) { setSt({ ledger, seen, freeze }); setClaims(cl); setDemoPrem(dp); setFc(f); setLoaded(true); }
+      const f = await read<boolean>('pc_rw_fc', false);
+      if (live) { setSt({ ledger, seen, freeze }); setClaims(cl); setFc(f); setLoaded(true); }
     })();
     return () => { live = false; };
   }, [src]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -191,12 +192,6 @@ export default function RewardsScreen() {
             {!user ? <Button title={t('nav.login')} small variant="ghost" full={false} onPress={() => router.push('/login')} /> : null}
           </Row>
         </Card>
-      ) : null}
-      {!realPremium ? (
-        <Row gap={10} style={{ marginTop: 12, justifyContent: 'space-between' }}>
-          <Txt v="small" color={c.mute} style={{ flex: 1 }}>{t('rw2.demo.premium')}</Txt>
-          <Switch value={demoPrem} onValueChange={(v) => { setDemoPrem(v); kv.set('pc_rw_demo_prem', JSON.stringify(v)); }} trackColor={{ true: c.red, false: c.line }} thumbColor="#fff" accessibilityLabel={t('rw2.demo.premium')} />
-        </Row>
       ) : null}
 
       {/* player header */}

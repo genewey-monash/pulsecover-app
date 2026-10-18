@@ -3,6 +3,7 @@ import { getLocales } from 'expo-localization';
 import webDict from '../i18n/web-dict.json';
 import { appStrings } from '../i18n/app-strings';
 import { kv } from './storage';
+import { tokens } from './pricing';
 
 export type Lang = 'en' | 'zh' | 'ms' | 'ta';
 export const LANGS: { code: Lang; label: string }[] = [
@@ -13,6 +14,8 @@ export const LANGS: { code: Lang; label: string }[] = [
 ];
 const IDX: Record<Lang, number> = { en: 0, zh: 1, ms: 2, ta: 3 };
 const DICT: Record<string, string[]> = { ...(webDict as Record<string, string[]>), ...appStrings };
+// {tokens} such as {maxPct}, {indBase} and {subYearly} come from the pricing config, so no wording hard-codes a price or percentage
+const TOKENS = tokens();
 
 interface Ctx { lang: Lang; setLang: (l: Lang) => void; t: (key: string, vars?: Record<string, string | number>) => string; ready: boolean }
 const I18nCtx = createContext<Ctx>({ lang: 'en', setLang: () => {}, t: (k) => k, ready: false });
@@ -41,6 +44,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     const row = DICT[key];
     let s = row ? (row[IDX[lang]] || row[0] || key) : key;
     if (vars) for (const [k, v] of Object.entries(vars)) s = s.split(`{${k}}`).join(String(v));
+    if (s.indexOf('{') >= 0) s = s.replace(/\{([a-zA-Z]+)\}/g, (m, k) => (k in TOKENS ? TOKENS[k] : m));
     return s;
   }, [lang]);
   const value = useMemo(() => ({ lang, setLang, t, ready }), [lang, setLang, t, ready]);

@@ -1,18 +1,44 @@
 'use strict';
-// PulseCover pricing engine (shared by server). Source: BMC workbook + report.
-// Base premium RM600/yr, annual wearable-linked repricing within +/-15%.
-const BASE_PREMIUM = 600;
-const BAND = 0.15;
+// PulseCover pricing engine (shared by server, website and app). ONE SOURCE OF TRUTH for every price and discount rule.
+// Change numbers in CONFIG only: every page, the API and the app read the values derived from it.
+const round2 = (v) => Math.round(v * 100) / 100;
+const CONFIG = {
+  // Premium subscription (illustrative). Yearly is entered as a price; the monthly total, saving and percentage are derived below.
+  subscription: { monthly: 14.9, yearly: 125 },
+  // Base premiums per year (illustrative): Individual per person, Family per member (up to familyMaxMembers), Business per employee.
+  base: { individual: 950, family: 1000, business: 950 },
+  // Wearable discount: no discount at a score of discountFromScore or below, rising in a straight line to maxDiscount at a score of 100.
+  discountFromScore: 50,
+  maxDiscount: 0.20,
+  familyMaxMembers: 6
+};
+const SUB = (() => {
+  const monthly = CONFIG.subscription.monthly, yearly = CONFIG.subscription.yearly;
+  const monthlyTotal = round2(monthly * 12), saving = round2(monthlyTotal - yearly);
+  return { monthly, yearly, monthlyTotal, saving, savingPct: Math.round((saving / monthlyTotal) * 100), effectiveMonthly: round2(yearly / 12) };
+})();
+const subscriptionPrice = (billing) => (billing === 'monthly' ? SUB.monthly : SUB.yearly);   // price charged each period
+const subscriptionAnnualCost = (billing) => (billing === 'monthly' ? SUB.monthlyTotal : SUB.yearly); // what a year of Premium costs
+const BASE_PREMIUM = CONFIG.base.individual;
+const BAND = CONFIG.maxDiscount;
 const COMMISSION = 0.25;
-// Placeholder plans (names/coverage are example values to be replaced). Plan A matches the report: RM600 base, term life + health rider.
+// Placeholder plans (names/coverage are example values to be replaced). Base premium comes from the plan type.
 const PLANS = {
-  A: { id: 'A', base: 600, cover: 100000, type: 'individual', isNew: true },
-  B: { id: 'B', base: 900, cover: 250000, type: 'individual', isNew: false },
-  C: { id: 'C', base: 1500, cover: 500000, type: 'family', isNew: false },
-  D: { id: 'D', base: 2400, cover: 1000000, type: 'family', isNew: true }
+  A: { id: 'A', base: CONFIG.base.individual, cover: 100000, type: 'individual', isNew: true },
+  B: { id: 'B', base: CONFIG.base.individual, cover: 250000, type: 'individual', isNew: false },
+  C: { id: 'C', base: CONFIG.base.family, cover: 500000, type: 'family', isNew: false },
+  D: { id: 'D', base: CONFIG.base.family, cover: 1000000, type: 'family', isNew: true }
 };
 const planOf = (id) => PLANS[id] || PLANS.A;
-const APP_SUB_MONTHLY = 14.9; // paid Premium Quote tier, illustrative RM14.90/month (BMC workbook, sheet 6a)
+const APP_SUB_MONTHLY = CONFIG.subscription.monthly; // paid Premium Quote tier (kept for older callers)
+
+const money = (n) => Number(n).toLocaleString('en-US'); // 1000 -> "1,000"
+// Values that text strings can use as {tokens}, so wording never hard-codes a price or percentage.
+const tokens = () => ({
+  maxPct: String(Math.round(CONFIG.maxDiscount * 100)), indBase: money(CONFIG.base.individual), famBase: money(CONFIG.base.family), bizBase: money(CONFIG.base.business),
+  subMonthly: SUB.monthly.toFixed(2), subYearly: String(SUB.yearly), subMonthlyTotal: SUB.monthlyTotal.toFixed(2), subSaving: SUB.saving.toFixed(2), subPct: String(SUB.savingPct), subEff: SUB.effectiveMonthly.toFixed(2),
+  famMax: String(CONFIG.familyMaxMembers)
+});
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const num = (v, d) => (Number.isFinite(Number(v)) && v !== '' && v !== null ? Number(v) : d);
@@ -35,9 +61,11 @@ function score(m) {
   return { score: Math.round(s), components: Object.fromEntries(Object.entries(c).map(([k, v]) => [k, Math.round(v)])) };
 }
 
-// Score 50 = neutral (0%). 100 = -15%. 0 = +15%.
+// Score at or below discountFromScore (50) = 0% discount, rising in a straight line to -maxDiscount (20%) at a score of 100. Never a surcharge.
 function adjustment(sc) {
-  return clamp(-((sc - 50) / 50) * BAND, -BAND, BAND);
+  const from = CONFIG.discountFromScore;
+  if (sc <= from) return 0;
+  return -clamp((sc - from) / (100 - from), 0, 1) * CONFIG.maxDiscount;
 }
 
 // CTOS-style grade bands for the PulseCover Risk Rating (score 0-100 -> grade).
@@ -72,21 +100,22 @@ function averageMetrics(list) {
   return { steps: sum.steps / n, exerciseMin: (sum.exerciseMin / n) * 7, sleepHours: sum.sleepHours / n, restingHr: sum.restingHr / n };
 }
 
-// SME group: per-employee base, discount tied to aggregate activity score (max 15% like individuals)
+// SME group: per-employee base, discount tied to aggregate activity score (same wearable discount as individuals), plus a headcount discount
 function smeQuote(employees, avgScore) {
   const n = Math.max(1, Math.floor(num(employees, 1)));
   const sc = clamp(num(avgScore, 50), 0, 100);
   const adj = adjustment(sc);
   const bulk = n >= 100 ? 0.05 : n >= 50 ? 0.03 : n >= 10 ? 0.02 : 0;
-  const perEmp = BASE_PREMIUM * (1 + adj) * (1 - bulk);
+  const base = CONFIG.base.business, perEmp = base * (1 + adj) * (1 - bulk);
   return {
     employees: n, avgScore: sc, adjustmentPct: Math.round(adj * 1000) / 10, bulkDiscountPct: bulk * 100,
     perEmployeeAnnual: Math.round(perEmp * 100) / 100, totalAnnual: Math.round(perEmp * n * 100) / 100,
-    savingsVsFlat: Math.round((BASE_PREMIUM * n - perEmp * n) * 100) / 100
+    savingsVsFlat: Math.round((base * n - perEmp * n) * 100) / 100, perEmployeeBase: base
   };
 }
 
-// Financial model from the BMC workbook (for the investor page)
+// Financial model from the BMC workbook (for the investor page). Uses the workbook's own RM600 average-premium assumption on purpose;
+// it is NOT the customer-facing price (see CONFIG). Update the workbook and these constants together if the model should change.
 function financials() {
   const fixedMonthly = 8000 + 9000 + 9000 + 6000 + 6000 + 3500 + 6000 + 7000 + 1500 + 4000 + 3000 + 800 + 700 + 500 + 300 + 2000 + 3000;
   const variableMonthly = 100 * 417 + 5 * 417 + 0.42 * 5000 + 2 * 417 + 0.6 * 5000 + 50 * 16.7 + 5 * 417;
@@ -102,4 +131,31 @@ function financials() {
   };
 }
 
-module.exports = { WEIGHTS, GRADES, gradeOf, PLANS, planOf, BASE_PREMIUM, BAND, COMMISSION, APP_SUB_MONTHLY, score, adjustment, quote, averageMetrics, smeQuote, financials, clamp, num };
+
+// ---- Improvement scenarios (shared by the plan results, the Premium Quote page and the app): realistic, capped targets ----
+const FACTOR_KEY = { steps: 'steps', exercise: 'exerciseMin', sleep: 'sleepHours', heart: 'restingHr' };
+const snap = (v, step) => Math.round(v / step) * step;
+function fullTarget(f, c) { // null = already at the top of the score for this habit
+  if (f === 'steps') return c.steps >= 8000 ? null : Math.min(8000, snap(c.steps + 3000, 250));
+  if (f === 'exercise') return c.exerciseMin >= 150 ? null : Math.min(150, snap(c.exerciseMin + 60, 5));
+  if (f === 'sleep') { if (c.sleepHours >= 7 && c.sleepHours <= 9) return null; return c.sleepHours < 7 ? Math.min(7.5, snap(c.sleepHours + 1, 0.25)) : 8.5; }
+  return c.restingHr <= 55 ? null : Math.max(55, c.restingHr - 5);
+}
+function improvementPlan(m, planId) {
+  const c = { steps: num(m.steps, 0), exerciseMin: num(m.exerciseMin, 0), sleepHours: num(m.sleepHours, 0), restingHr: num(m.restingHr, 70) };
+  const withVal = (o, f, v) => Object.assign({}, o, { [FACTOR_KEY[f]]: v });
+  const base = quote(c, { plan: planId }), rows = [];
+  for (const f of ['steps', 'exercise', 'sleep', 'heart']) {
+    const to = fullTarget(f, c);
+    if (to === null) { rows.push({ f, from: c[FACTOR_KEY[f]], to: null, fscore: score(c).components[f], score: base.score, annual: base.annualPremium, saving: 0 }); continue; }
+    const n = withVal(c, f, to), q = quote(n, { plan: planId });
+    rows.push({ f, from: c[FACTOR_KEY[f]], to, fscore: score(n).components[f], score: q.score, annual: q.annualPremium, saving: Math.max(0, round2(base.annualPremium - q.annualPremium)) });
+  }
+  const top = rows.filter((r) => r.to !== null && r.saving > 0).sort((a, b) => b.saving - a.saving).slice(0, 3);
+  let n = c; top.forEach((r) => { n = withVal(n, r.f, r.to); });
+  const q = quote(n, { plan: planId });
+  // saving = extra saving from improving; total = everything saved versus the flat base premium after improving (what the net-saving card uses)
+  return { rows, base, best: { factors: top.map((r) => r.f), score: q.score, annual: q.annualPremium, saving: Math.max(0, round2(base.annualPremium - q.annualPremium)), totalSaving: Math.max(0, round2(q.base - q.annualPremium)) } };
+}
+
+module.exports = { improvementPlan, fullTarget, CONFIG, SUB, subscriptionPrice, subscriptionAnnualCost, tokens, WEIGHTS, GRADES, gradeOf, PLANS, planOf, BASE_PREMIUM, BAND, COMMISSION, APP_SUB_MONTHLY, score, adjustment, quote, averageMetrics, smeQuote, financials, clamp, num };

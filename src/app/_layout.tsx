@@ -16,6 +16,7 @@ import { DataProvider } from '../lib/data';
 import { setLangGetter } from '../lib/api';
 import { BiometricLock, IdleGuard, OfflineBanner, ToastProvider, touchActivity } from '../lib/overlays';
 import { DrawerProvider } from '../lib/drawer';
+import { SubscriptionProvider } from '../lib/subscription';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -63,7 +64,9 @@ export default function RootLayout() {
             <AuthProvider>
               <DataProvider>
                 <ToastProvider>
-                  <Shell />
+                  <SubscriptionProvider>
+                    <Shell />
+                  </SubscriptionProvider>
                 </ToastProvider>
               </DataProvider>
             </AuthProvider>

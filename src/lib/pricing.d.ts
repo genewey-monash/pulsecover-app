@@ -18,6 +18,17 @@ export function gradeOf(score: number): string;
 export function planOf(id?: string): Plan;
 export function quote(m: Partial<Metrics>, opts?: { plan?: string; appSubscription?: boolean }): Quote;
 export function averageMetrics(list: Partial<Metrics>[]): Metrics;
-export function smeQuote(employees: number, avgScore: number): { employees: number; avgScore: number; adjustmentPct: number; bulkDiscountPct: number; perEmployeeAnnual: number; totalAnnual: number; savingsVsFlat: number };
+export function smeQuote(employees: number, avgScore: number): { perEmployeeBase: number; employees: number; avgScore: number; adjustmentPct: number; bulkDiscountPct: number; perEmployeeAnnual: number; totalAnnual: number; savingsVsFlat: number };
 export function clamp(v: number, a: number, b: number): number;
 export function num(v: unknown, d: number): number;
+
+export interface Config { subscription: { monthly: number; yearly: number }; base: { individual: number; family: number; business: number }; discountFromScore: number; maxDiscount: number; familyMaxMembers: number }
+export const CONFIG: Config;
+export const SUB: { monthly: number; yearly: number; monthlyTotal: number; saving: number; savingPct: number; effectiveMonthly: number };
+export type Billing = 'monthly' | 'yearly';
+export function subscriptionPrice(b: Billing): number;
+export function subscriptionAnnualCost(b: Billing): number;
+export function tokens(): Record<string, string>;
+export interface ImprovementRow { f: 'steps' | 'exercise' | 'sleep' | 'heart'; from: number; to: number | null; fscore: number; score: number; annual: number; saving: number }
+export function fullTarget(f: 'steps' | 'exercise' | 'sleep' | 'heart', c: Metrics): number | null;
+export function improvementPlan(m: Partial<Metrics>, planId?: string): { rows: ImprovementRow[]; base: Quote; best: { factors: string[]; score: number; annual: number; saving: number; totalSaving: number } };

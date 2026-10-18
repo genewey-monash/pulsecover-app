@@ -37,7 +37,6 @@ const MAIN: Item[] = [
   { icon: 'person', key: 'app.tab.account', to: '/(tabs)/account', tab: true, guestOnly: true },
   { icon: 'pulse', key: 'nav.connect', to: '/(tabs)/wearable', tab: true },
   { icon: 'shield-checkmark', key: 'nav.plans', to: '/(tabs)/plans', tab: true },
-  { icon: 'calculator', key: 'nav.calc', to: '/calculator' },
   { icon: 'git-compare', key: 'nav.compare', to: '/compare' },
   { icon: 'document-text', key: 'nav.claims', to: '/(tabs)/claims', tab: true },
   { icon: 'star', key: 'nav.premium', to: '/premium' },
@@ -46,6 +45,7 @@ const MAIN: Item[] = [
   { icon: 'gift', key: 'app.refer', to: '/referral' },
 ];
 const MORE: Item[] = [
+  { icon: 'calculator', key: 'nav.calc', to: '/calculator' }, // out of the main menu, still reachable here and from the Pricing page
   { icon: 'help-circle', key: 'nav.faq', to: '/faq' },
   { icon: 'call', key: 'nav.talk', to: '/callback' },
   { icon: 'lock-closed', key: 'footer.privacy', to: '/privacy' },

@@ -3,6 +3,8 @@ import { Platform, Switch, View } from 'react-native';
 import * as Application from 'expo-application';
 import { useRouter } from 'expo-router';
 import { Avatar, Badge, Button, Card, Chip, Gap, Group, Icon, ListRow, Row, Screen, SectionTitle, Sheet, Tile, Txt } from '../../components/ui';
+import { useFdate } from '../../components/subscription';
+import { useSub } from '../../lib/subscription';
 import { LanguageSheet, Logo } from '../../components/common';
 import { FeedbackSheet } from '../../components/feedback';
 import { useAuth } from '../../lib/auth';
@@ -20,6 +22,7 @@ export default function AccountTab() {
   const toggleBio = async (on: boolean) => { setBio(on); await kv.set('pc_bio', on ? '1' : '0'); toast(on ? t('app.bio.on') : t('app.bio.off')); };
   const themes: [ThemePref, string][] = [['system', t('app.theme.system')], ['light', t('app.theme.light')], ['dark', t('app.theme.dark')]];
   const go = (p: string) => () => router.push(p as any);
+  const { sub, isPremium } = useSub(); const fdate = useFdate();
   const curLang = LANGS.find((l) => l.code === lang)?.label ?? '';
 
   return (
@@ -60,6 +63,11 @@ export default function AccountTab() {
           </Group>
         </>
       ) : null}
+
+      <SectionTitle>{t('db.prem')}</SectionTitle>
+      <Group>
+        <ListRow icon="star" title={t('db.prem.h')} subtitle={isPremium ? t('sb.active', { d: sub.renewalDate ? fdate(sub.renewalDate) : '' }) : t('sb.mg.free.h')} onPress={go('/subscription')} last />
+      </Group>
 
       <SectionTitle>{t('app.sec.prefs')}</SectionTitle>
       <Group>
