@@ -40,8 +40,9 @@ export default function How() {
       <Card tone="gold" style={{ marginTop: 14 }}><Txt v="h3">{t('how.sum.h')}</Txt><Txt v="small" color={c.mute} style={{ marginTop: 4 }}>{t('how.sum.p')}</Txt><Txt v="h3" style={{ marginTop: 12 }}>{t('how.never.h')}</Txt><Txt v="small" color={c.mute} style={{ marginTop: 4 }}>{t('how.never.p')}</Txt></Card>
       <Txt v="h3" style={{ marginTop: 22, marginBottom: 4 }}>{t('pp.base.h')}</Txt>
       <Txt v="small" color={c.mute} style={{ marginBottom: 10 }}>{t('pp.base.p')}</Txt>
-      {([['pp.base.ind', rm(CONFIG.base.individual, 0)], ['pp.base.fam', rm(CONFIG.base.family, 0)], ['pp.base.biz', t('pp.base.custom')]] as const).map(([k, v]) => (
-        <Card key={k} pad={14} style={{ marginBottom: 8 }}><Row style={{ justifyContent: 'space-between' }} gap={10}><Txt v="small" style={{ flex: 1 }}>{t(k)}</Txt><Txt v="h3" color={c.accent}>{v}</Txt></Row></Card>
+      {([['pp.base.ind', rm(CONFIG.base.individual, 0), 'A'], ['pp.base.fam', rm(CONFIG.base.family, 0), 'C'], ['pp.base.biz', t('pp.base.custom'), 'business']] as const).map(([k, v, plan]) => (
+        <Card key={k} pad={14} style={{ marginBottom: 8 }}><Row style={{ justifyContent: 'space-between' }} gap={10}><Txt v="small" style={{ flex: 1 }}>{t(k)}</Txt><Txt v="h3" color={c.accent}>{v}</Txt></Row>
+          <Gap h={12} /><Button title={t('plan.quote')} variant="ghost" small onPress={() => router.push({ pathname: '/plan-result', params: { plan } })} /></Card>
       ))}
       <Txt v="h3" style={{ marginTop: 22, marginBottom: 4 }}>{t('pp.h')}</Txt>
       <Txt v="small" color={c.mute} style={{ marginBottom: 10 }}>{t('pp.sub')}</Txt>
