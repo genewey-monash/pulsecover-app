@@ -28,7 +28,6 @@ export default function Search() {
       { href: '/business', icon: 'briefcase', title: t('sme.h1'), sub: t('sme.sub'), group: pg, kw: 'business sme company group employees' },
       { href: '/how', icon: 'school', title: t('how.h1'), sub: t('how.sub'), group: pg, kw: 'how pricing works rules rating grade' },
       { href: '/privacy', icon: 'lock-closed', title: t('prv.h1'), sub: t('prv.sub'), group: pg, kw: 'privacy data security' },
-      { href: '/investors', icon: 'stats-chart', title: t('inv.h1'), sub: t('inv.sub'), group: pg, kw: 'investors market financial numbers' },
       { href: '/faq', icon: 'help-circle', title: t('faq.h1'), sub: '', group: pg, kw: 'faq help questions' },
       { href: user ? '/profile' : '/login', icon: 'person', title: user ? t('pf.h1') : t('nav.login'), sub: t('pf.sub'), group: pg, kw: 'profile account login register password logout' },
       { href: '/referral', icon: 'gift', title: t('ref.h'), sub: t('ref.p'), group: tl, kw: 'referral refer friend code' },

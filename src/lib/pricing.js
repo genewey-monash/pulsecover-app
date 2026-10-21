@@ -22,7 +22,6 @@ const subscriptionPrice = (billing) => (billing === 'monthly' ? SUB.monthly : SU
 const subscriptionAnnualCost = (billing) => (billing === 'monthly' ? SUB.monthlyTotal : SUB.yearly); // what a year of Premium costs
 const BASE_PREMIUM = CONFIG.base.individual;
 const BAND = CONFIG.maxDiscount;
-const COMMISSION = 0.25;
 // Placeholder plans (names/coverage are example values to be replaced). Base premium comes from the plan type.
 const PLANS = {
   A: { id: 'A', base: CONFIG.base.individual, cover: 100000, type: 'individual', isNew: true },
@@ -101,24 +100,6 @@ function averageMetrics(list) {
   return { steps: sum.steps / n, exerciseMin: (sum.exerciseMin / n) * 7, sleepHours: sum.sleepHours / n, restingHr: sum.restingHr / n };
 }
 
-// Financial model from the BMC workbook (for the investor page). Uses the workbook's own RM600 average-premium assumption on purpose;
-// it is NOT the customer-facing price (see CONFIG). Update the workbook and these constants together if the model should change.
-function financials() {
-  const fixedMonthly = 8000 + 9000 + 9000 + 6000 + 6000 + 3500 + 6000 + 7000 + 1500 + 4000 + 3000 + 800 + 700 + 500 + 300 + 2000 + 3000;
-  const variableMonthly = 100 * 417 + 5 * 417 + 0.42 * 5000 + 2 * 417 + 0.6 * 5000 + 50 * 16.7 + 5 * 417;
-  const revenue = 5000 * 600 * 0.25 + 5000 * 0.2 * 60;
-  const cost = fixedMonthly * 12 + variableMonthly * 12;
-  const revPer = 600 * 0.25 + 0.2 * 60;
-  const varPer = 100 + 5 + 5 + (0.42 + 0.6) * 12 + 2 + 0.04 * 50;
-  const cm = revPer - varPer;
-  return {
-    fixedMonthly, variableMonthly: Math.round(variableMonthly), fixedAnnual: fixedMonthly * 12, revenue,
-    totalCost: Math.round(cost), profit: Math.round(revenue - cost), revPerPolicy: revPer, varPerPolicy: Math.round(varPer * 100) / 100,
-    contributionMargin: Math.round(cm * 100) / 100, breakevenPolicies: Math.round((fixedMonthly * 12) / cm)
-  };
-}
-
-
 // ---- Improvement scenarios (shared by the plan results, the Premium Quote page and the app): realistic, capped targets ----
 const FACTOR_KEY = { steps: 'steps', exercise: 'exerciseMin', sleep: 'sleepHours', heart: 'restingHr' };
 const snap = (v, step) => Math.round(v / step) * step;
@@ -145,4 +126,4 @@ function improvementPlan(m, planId) {
   return { rows, base, best: { factors: top.map((r) => r.f), score: q.score, annual: q.annualPremium, saving: Math.max(0, round2(base.annualPremium - q.annualPremium)), totalSaving: Math.max(0, round2(q.base - q.annualPremium)) } };
 }
 
-module.exports = { improvementPlan, fullTarget, CONFIG, SUB, subscriptionPrice, subscriptionAnnualCost, tokens, WEIGHTS, GRADES, gradeOf, PLANS, planOf, BASE_PREMIUM, BAND, COMMISSION, APP_SUB_MONTHLY, score, adjustment, quote, averageMetrics, financials, clamp, num };
+module.exports = { improvementPlan, fullTarget, CONFIG, SUB, subscriptionPrice, subscriptionAnnualCost, tokens, WEIGHTS, GRADES, gradeOf, PLANS, planOf, BASE_PREMIUM, BAND, APP_SUB_MONTHLY, score, adjustment, quote, averageMetrics, clamp, num };
