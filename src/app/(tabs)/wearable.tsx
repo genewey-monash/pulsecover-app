@@ -127,7 +127,7 @@ export default function WearableTab() {
           ) : null}
           <Card>
             <Txt v="h3">{t('connect.allow.h')}</Txt>
-            {['a1', 'a2', 'a3', 'a4'].map((k) => <Row key={k} gap={10} style={{ marginTop: 8 }}><Icon name="checkmark-circle" size={20} color={c.ok} /><Txt>{t(`connect.${k}`)}</Txt></Row>)}
+            {['a1', 'a2', 'a3', 'a4', 'a5'].map((k) => <Row key={k} gap={10} style={{ marginTop: 8 }}><Icon name="checkmark-circle" size={20} color={c.ok} /><Txt>{t(`connect.${k}`)}</Txt></Row>)}
             <View style={{ height: 1, backgroundColor: c.line, marginVertical: 14 }} />
             <Txt v="h3">{t('connect.never.h')}</Txt>
             {['n1', 'n2', 'n3'].map((k) => <Row key={k} gap={10} style={{ marginTop: 8 }}><Icon name="close-circle" size={20} color={c.bad} /><Txt>{t(`connect.${k}`)}</Txt></Row>)}
