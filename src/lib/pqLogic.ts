@@ -1,6 +1,6 @@
 import { WEIGHTS, quote, score as scoreOf, type Metrics, type Quote } from './pricing';
 
-/** Premium Quote Results: scenario and coaching maths on top of the shared scoring engine (same rules as the website page). */
+/** Premium Subscription Results: scenario and coaching maths on top of the shared scoring engine (same rules as the website page). */
 export type Factor = 'steps' | 'exercise' | 'sleep' | 'heart';
 export const FACTORS: Factor[] = ['steps', 'exercise', 'sleep', 'heart'];
 export const KEY: Record<Factor, keyof Metrics> = { steps: 'steps', exercise: 'exerciseMin', sleep: 'sleepHours', heart: 'restingHr' };

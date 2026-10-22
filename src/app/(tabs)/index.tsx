@@ -183,7 +183,7 @@ export default function Home() {
         ))}
       </Row>
 
-      {/* dedicated Premium Quote callout, below the shortcuts */}
+      {/* dedicated Premium Subscription callout, below the shortcuts */}
       <Pressable onPress={() => { tap(); router.push('/premium'); }} accessibilityRole="button" accessibilityLabel={t('pq.h')} style={{ marginTop: 16 }}>
         <View style={{ backgroundColor: c.red, borderRadius: 22, padding: 18 }}>
           <Row gap={8} style={{ marginBottom: 6 }}><Ionicons name="star" size={16} color="#FFD9E0" /><Txt v="caption" w="800" color="#FFD9E0" style={{ letterSpacing: 1 }}>{t('pq.kicker').toUpperCase()}</Txt></Row>

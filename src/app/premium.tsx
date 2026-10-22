@@ -9,7 +9,7 @@ import { useTheme } from '../lib/theme';
 
 const ROWS = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7', 'r8'] as const;
 
-/** Free vs Premium Quote: what is included at each level. */
+/** Free vs Premium Subscription: what is included at each level. */
 export default function PremiumScreen() {
   const router = useRouter(); const { t } = useI18n(); const { c } = useTheme(); const { sub } = useSub();
   const Mark = ({ yes }: { yes: boolean }) => yes

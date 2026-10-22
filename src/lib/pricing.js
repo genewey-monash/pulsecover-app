@@ -25,12 +25,12 @@ const BAND = CONFIG.maxDiscount;
 // Placeholder plans (names/coverage are example values to be replaced). Base premium comes from the plan type.
 const PLANS = {
   A: { id: 'A', base: CONFIG.base.individual, cover: 100000, type: 'individual', isNew: true },
-  B: { id: 'B', base: CONFIG.base.individual, cover: 250000, type: 'individual', isNew: false },
+  B: { id: 'B', base: 1050, cover: 250000, type: 'individual', isNew: false },
   C: { id: 'C', base: CONFIG.base.family, cover: 500000, type: 'family', isNew: false },
-  D: { id: 'D', base: CONFIG.base.family, cover: 1000000, type: 'family', isNew: true }
+  D: { id: 'D', base: 1000, cover: 1000000, type: 'family', isNew: true }
 };
 const planOf = (id) => PLANS[id] || PLANS.A;
-const APP_SUB_MONTHLY = CONFIG.subscription.monthly; // paid Premium Quote tier (kept for older callers)
+const APP_SUB_MONTHLY = CONFIG.subscription.monthly; // paid Premium Subscription tier (kept for older callers)
 
 const money = (n) => Number(n).toLocaleString('en-US'); // 1000 -> "1,000"
 // Values that text strings can use as {tokens}, so wording never hard-codes a price or percentage.

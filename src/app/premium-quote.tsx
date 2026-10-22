@@ -59,7 +59,7 @@ function Gate({ locked, title, onUnlock, children }: { locked: boolean; title: s
   );
 }
 
-/** Premium Quote Results: detailed assessment, savings scenarios, coaching plan, policy guidance and perks. Mirrors /premium-quote on the website. */
+/** Premium Subscription Results: detailed assessment, savings scenarios, coaching plan, policy guidance and perks. Mirrors /premium-quote on the website. */
 export default function PremiumQuoteScreen() {
   const router = useRouter(); const { t, lang } = useI18n(); const { c } = useTheme(); const { user } = useAuth(); const { dash } = useDash(); const toast = useToast();
   const [plan, setPlan] = useState<PlanId>('A'); const [cur, setCur] = useState<Metrics>(SAMPLE);
