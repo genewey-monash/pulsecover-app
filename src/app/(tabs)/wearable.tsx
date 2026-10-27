@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Button, Card, Chip, ErrorBox, Field, Gap, Icon, Notice, Row, Screen, Sheet, Tile, Txt, success } from '../../components/ui';
+import { Button, Card, Chip, ErrorBox, Gap, Icon, Notice, Row, Screen, Sheet, Tile, Txt, success } from '../../components/ui';
 import { StatsSummary } from '../../components/summary';
 import { api } from '../../lib/api';
 import { useAuth } from '../../lib/auth';
@@ -15,7 +15,6 @@ import type { Quote } from '../../lib/pricing';
 const ICON: Record<string, React.ComponentProps<typeof Icon>['name']> = { applehealth: 'logo-apple', healthconnect: 'logo-google', fitbit: 'watch', garmin: 'navigate-circle', whoop: 'fitness' };
 // Apple Health and Google Health Connect are the two links; Fitbit, Garmin and Whoop data flow in through them
 const CONNECTABLE = ['applehealth', 'healthconnect'];
-const REASONS = ['illness', 'injury', 'travel', 'pregnancy', 'other'] as const;
 
 export default function WearableTab() {
   const router = useRouter(); const { t } = useI18n(); const { c } = useTheme(); const { user } = useAuth(); const { dash, refresh, loading, guestConnect, guestDisconnect } = useDash(); const toast = useToast();
@@ -26,7 +25,6 @@ export default function WearableTab() {
   const [done, setDone] = useState<{ provider: string; days: number; quote: Quote } | null>(null);
   const [discon, setDiscon] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false); const [syncMsg, setSyncMsg] = useState<{ ok: boolean; text: string } | null>(null);
-  const [days, setDays] = useState('14'); const [reason, setReason] = useState<typeof REASONS[number]>('illness'); const [pm, setPm] = useState<{ ok: boolean; text: string } | null>(null);
   const conn = new Set((dash?.connections ?? []).map((x) => x.provider));
 
   const startConnect = (p: string) => { setErr(null); setAsk(p); }; // guests can connect too; an account is only needed to apply
@@ -46,12 +44,6 @@ export default function WearableTab() {
     setSyncing(true); setSyncMsg(null);
     try { await api('/sync', {}); await refresh(); setSyncMsg({ ok: true, text: t('dash.synced') }); success(); }
     catch (e) { setSyncMsg({ ok: false, text: errorText(e, t) }); } finally { setSyncing(false); }
-  };
-  const pause = async () => {
-    const n = parseInt(days, 10);
-    if (!(n >= 1 && n <= 60)) { setPm({ ok: false, text: t('dash.pause.days') }); return; }
-    try { await api('/pause', { days: n, reason }); await refresh(); setPm({ ok: true, text: t('dash.synced') }); }
-    catch (e) { setPm({ ok: false, text: errorText(e, t) }); }
   };
 
   const SEGS: { id: 'devices' | 'rating' | 'settings'; label: string }[] = [
@@ -113,18 +105,6 @@ export default function WearableTab() {
 
       {seg === 'settings' ? (
         <>
-          {user && dash?.policy ? (
-            <Card style={{ marginBottom: 14 }}>
-              <Txt v="h3">{t('dash.pause.h')}</Txt>
-              <Txt v="small" color={c.mute} style={{ marginTop: 4 }}>{t('dash.pause.p')}</Txt>
-              {dash.paused ? <Notice tone="info" text={`${t('dash.paused')} ${dash.paused}`} /> : null}
-              <Field label={t('dash.pause.days')} value={days} onChangeText={(v) => setDays(v.replace(/\D/g, '').slice(0, 2))} keyboardType="number-pad" />
-              <Row wrap gap={8} style={{ marginTop: 12 }}>{REASONS.map((r) => <Chip key={r} label={t(`app.reason.${r}`)} on={reason === r} onPress={() => setReason(r)} />)}</Row>
-              <Gap h={14} />
-              <Button title={t('dash.pause.btn')} variant="ghost" icon="pause" onPress={pause} />
-              {pm ? (pm.ok ? <Notice text={pm.text} /> : <ErrorBox text={pm.text} />) : null}
-            </Card>
-          ) : null}
           <Card>
             <Txt v="h3">{t('connect.allow.h')}</Txt>
             {['a1', 'a2', 'a3', 'a4', 'a5'].map((k) => <Row key={k} gap={10} style={{ marginTop: 8 }}><Icon name="checkmark-circle" size={20} color={c.ok} /><Txt>{t(`connect.${k}`)}</Txt></Row>)}

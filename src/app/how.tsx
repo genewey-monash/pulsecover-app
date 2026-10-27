@@ -13,7 +13,7 @@ import { gradeColor } from '../components/charts';
 export default function How() {
   const router = useRouter(); const { t } = useI18n(); const { c } = useTheme(); const { isPremium } = useSub();
   const [sheet, setSheet] = useState<Billing | null>(null);
-  const icons = ['cash', 'pulse', 'swap-vertical', 'calendar', 'pause-circle', 'lock-closed'] as const;
+  const icons = ['cash', 'pulse', 'swap-vertical', 'calendar', 'analytics', 'lock-closed'] as const;
   const pct = (sc: number) => { const v = Math.round(adjustment(sc) * 1000) / 10; return `${v > 0 ? '+' : v < 0 ? '−' : ''}${Math.abs(v)}%`; };
   const effect = (i: number) => `${pct(i === 0 ? 100 : GRADES[i - 1].min - 1)} → ${pct(GRADES[i].min)}`;
   return (
